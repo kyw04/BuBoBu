@@ -23,6 +23,7 @@ namespace PangPangShotNetwork
 
             runner = Instantiate(runnerPrefab);
             runner.ProvideInput = true;
+            runner.AddCallbacks(runner.GetComponent<PlayerInputHandler>());
 
             var result = await runner.StartGame(new StartGameArgs
             {

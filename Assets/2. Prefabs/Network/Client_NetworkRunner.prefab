@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5385679231456744609}
   - component: {fileID: -7053320093319837648}
   - component: {fileID: -2312442317040761480}
+  - component: {fileID: -2423753082823436387}
   m_Layer: 0
   m_Name: Client_NetworkRunner
   m_TagString: Untagged
@@ -60,3 +61,15 @@ MonoBehaviour:
   IsSceneTakeOverEnabled: 1
   LogSceneLoadErrors: 1
   DestroySpawnedPrefabsOnSceneUnload: 1
+--- !u!114 &-2423753082823436387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1411043537503640305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3921e806f3219554baeccc72825b8cb7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PangPangShotNetwork.PlayerInputHandler
