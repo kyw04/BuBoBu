@@ -42,6 +42,9 @@
 # Visual Studio cache directory
 .vs/
 
+# Rider workspace settings
+.idea/
+
 # Gradle cache directory
 .gradle/
 
@@ -80,6 +83,8 @@ mono_crash.*
 *.unitypackage
 *.unitypackage.meta
 *.app
+/Build/
+/ServerBulid/
 
 # Crashlytics generated file
 crashlytics-build.properties
