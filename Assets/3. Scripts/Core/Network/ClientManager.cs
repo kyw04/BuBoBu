@@ -8,6 +8,16 @@ public class ClientManager : MonoBehaviour
     [SerializeField] private NetworkRunner runnerPrefab;
     private NetworkRunner runner;
     
+    private void OnApplicationQuit()
+    {
+        runner?.Shutdown();
+    }
+
+    private void OnDestroy()
+    {
+        runner?.Shutdown();
+    }
+    
     public async void JoinGame()
     {
         if (runner != null) return;
