@@ -84,7 +84,7 @@ mono_crash.*
 *.unitypackage.meta
 *.app
 /Build/
-/ServerBulid/
+/ServerBuild/
 
 # Crashlytics generated file
 crashlytics-build.properties

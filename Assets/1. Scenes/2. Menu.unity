@@ -149,6 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClientManager
   runnerPrefab: {fileID: -7053320093319837648, guid: cc202714869165d49be5bf32700d017f, type: 3}
+  joinButton: {fileID: 190929349}
 --- !u!4 &35412448
 Transform:
   m_ObjectHideFlags: 0
@@ -246,19 +247,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 190929350}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 35412447}
-        m_TargetAssemblyTypeName: ClientManager, Assembly-CSharp
-        m_MethodName: JoinGame
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &190929350
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -936,6 +925,6 @@ SceneRoots:
   - {fileID: 330585546}
   - {fileID: 410087041}
   - {fileID: 832575519}
-  - {fileID: 35412448}
   - {fileID: 1401287881}
   - {fileID: 396403714}
+  - {fileID: 35412448}

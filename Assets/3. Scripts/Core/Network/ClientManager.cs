@@ -1,56 +1,48 @@
 using Fusion;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ClientManager : MonoBehaviour
+namespace PangPangShotNetwork
 {
-    [SerializeField] private NetworkRunner runnerPrefab;
-    private NetworkRunner runner;
-    
-    private void OnApplicationQuit()
+    public class ClientManager : MonoBehaviour
     {
-        runner?.Shutdown();
-    }
+        [SerializeField] private NetworkRunner runnerPrefab;
+        [SerializeField] private Button joinButton;
+        private NetworkRunner runner;
 
-    private void OnDestroy()
-    {
-        runner?.Shutdown();
-    }
-    
-    public async void JoinGame()
-    {
-        if (runner != null) return;
-        
-        var button = EventSystem.current.currentSelectedGameObject;
-        if (button.TryGetComponent(out Button btn))
-            btn.interactable = false;
-
-        runner = Instantiate(runnerPrefab);
-        runner.ProvideInput = true;
-
-        var result = await runner.StartGame(new StartGameArgs
+        private void Awake()
         {
-            GameMode     = GameMode.Client,
-            SessionName  = "test-room",
-            SceneManager = runner.GetComponent<NetworkSceneManagerDefault>(),
-        });
-
-        if (result.Ok)
-        {
-            RPC_LogToServer("Joined game");
+            joinButton.onClick.AddListener(JoinGame);
         }
-        else
-        {
-            Debug.LogError($"접속 실패: {result.ShutdownReason}");
-            Destroy(runner.gameObject);
-            runner = null;
-        }
-    }
 
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    private void RPC_LogToServer(string message, RpcInfo info = default)
-    {
-        Debug.Log($"[Client {info.Source}] {message}");
+        public async void JoinGame()
+        {
+            if (runner != null) return;
+
+            joinButton.interactable = false;
+
+            runner = Instantiate(runnerPrefab);
+            runner.ProvideInput = true;
+
+            var result = await runner.StartGame(new StartGameArgs
+            {
+                GameMode = GameMode.Client,
+                SessionName = "test-room",
+                SceneManager = runner.GetComponent<NetworkSceneManagerDefault>(),
+            });
+
+            if (!result.Ok)
+            {
+                Debug.LogError($"접속 실패: {result.ShutdownReason}");
+                Destroy(runner.gameObject);
+                runner = null;
+                joinButton.interactable = true;
+            }
+        }
+
+        private void OnApplicationQuit()
+        {
+            runner?.Shutdown();
+        }
     }
 }

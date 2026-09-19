@@ -461,7 +461,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cce10119a261ab24fa01b5af141d8da4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ServerManager
-  playerCount: 2
+  playerCount: 4
   runnerPrefab: {fileID: -7053320093319837648, guid: 75268675013d5024fa74419b701dacf7, type: 3}
 --- !u!4 &835284246
 Transform:
