@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: -7053320093319837648}
   - component: {fileID: -2312442317040761480}
   - component: {fileID: 4658264476230595005}
+  - component: {fileID: -2436520424435581948}
   m_Layer: 0
   m_Name: Sever_NetworkRunner
   m_TagString: Untagged
@@ -73,3 +74,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8657aabb929d4774caad458fd6960bab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PangPangShotNetwork.ServerEvents
+--- !u!114 &-2436520424435581948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1411043537503640305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acbf976aa25e7ba4fa5a659f6a7ded48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PangPangShotNetwork.PlayerSpawner
+  playerPrefab:
+    RawGuidValue: be18134775670d24085db99e64cb8c1al
+  spawnPosition: {x: 0, y: -1.6, z: 0}
