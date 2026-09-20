@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -2312442317040761480}
   - component: {fileID: 4658264476230595005}
   - component: {fileID: -2436520424435581948}
+  - component: {fileID: -92628994547309588}
   m_Layer: 0
   m_Name: Sever_NetworkRunner
   m_TagString: Untagged
@@ -89,3 +90,20 @@ MonoBehaviour:
   playerPrefab:
     RawGuidValue: be18134775670d24085db99e64cb8c1al
   spawnPosition: {x: 0, y: -1.6, z: 0}
+--- !u!114 &-92628994547309588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1411043537503640305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9fd79d79a0fb459ababab9a78f00caa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Addons.Physics::Fusion.Addons.Physics.RunnerSimulatePhysics2D
+  _physicsAuthority: 2
+  _physicsTiming: 3
+  ClientPhysicsSimulation: 0
+  DeltaTimeMultiplier: 1
+  SetUnityFixedTimestep: 0

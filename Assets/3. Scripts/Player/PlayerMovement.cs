@@ -1,11 +1,14 @@
 using Fusion;
+using Fusion.Addons.Physics;
 using UnityEngine;
 
 namespace PangPangShotNetwork
 {
+    [RequireComponent(typeof(Rigidbody2D))]
     public class PlayerMovement : NetworkBehaviour
     {
         [SerializeField] private float moveSpeed = 5f;
+        [SerializeField] private float moveAcceleration = 50f;
         [SerializeField] private float jumpForce = 8f;
         [SerializeField] private float gravity = -20f;
         [SerializeField] private Transform groundCheck;
@@ -13,27 +16,37 @@ namespace PangPangShotNetwork
         [SerializeField] private LayerMask groundLayer;
         [SerializeField] private SpriteRenderer spriteRenderer;
         // maxFallSpeed * Runner.DeltaTime must stay below groundCheckRadius to avoid tunneling through the ground on landing.
-        [SerializeField] private float maxFallSpeed = 8f;
+        [SerializeField, Min(0f)] private float maxFallSpeed = 8f;
 
-        [Networked] private float VerticalVelocity { get; set; }
+        private Rigidbody2D rb;
+
         [Networked] private NetworkButtons PreviousButtons { get; set; }
+
+        public bool IsGrounded => Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+
+        public override void Spawned()
+        {
+            rb = GetComponent<Rigidbody2D>();
+            rb.gravityScale = gravity / Physics2D.gravity.y;
+        }
 
         public override void FixedUpdateNetwork()
         {
             if (!GetInput(out NetworkInputData input)) return;
 
-            bool grounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+            bool grounded = IsGrounded;
+
+            float speedDiff = input.Move.x * moveSpeed - rb.linearVelocity.x;
+            rb.AddForce(Vector2.right * (speedDiff * moveAcceleration), ForceMode2D.Force);
 
             if (grounded && input.Buttons.WasPressed(PreviousButtons, NetworkInputData.JumpButton))
-                VerticalVelocity = jumpForce;
-            else if (grounded)
-                VerticalVelocity = 0f;
-            else
-                VerticalVelocity = Mathf.Max(VerticalVelocity + gravity * Runner.DeltaTime, -maxFallSpeed);
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+                rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            }
 
-            Vector3 delta = new Vector3(input.Move.x * moveSpeed, VerticalVelocity, 0f) * Runner.DeltaTime;
-            transform.position += delta;
-            Physics2D.SyncTransforms();
+            if (rb.linearVelocity.y < -maxFallSpeed)
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, -maxFallSpeed);
 
             if (input.Move.x != 0f)
                 spriteRenderer.flipX = input.Move.x < 0f;

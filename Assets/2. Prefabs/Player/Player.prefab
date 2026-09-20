@@ -42,8 +42,9 @@ GameObject:
   - component: {fileID: 8509094750542212601}
   - component: {fileID: 8084290638946241050}
   - component: {fileID: 180273678089406248}
-  - component: {fileID: 8776127644640013409}
+  - component: {fileID: -1839394710438608521}
   - component: {fileID: 6977800326643103964}
+  - component: {fileID: 7467558712539844014}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -122,10 +123,10 @@ MonoBehaviour:
   Flags: 262145
   NestedObjects: []
   NetworkedBehaviours:
-  - {fileID: 8776127644640013409}
+  - {fileID: -1839394710438608521}
   - {fileID: 6977800326643103964}
   ForceRemoteRenderTimeframe: 0
---- !u!114 &8776127644640013409
+--- !u!114 &-1839394710438608521
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -134,14 +135,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 8145728996827313797}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Script: {fileID: 11500000, guid: c5e690b5fb1084f5ab1c86457af401d4, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
+  m_EditorClassIdentifier: Fusion.Addons.Physics::Fusion.Addons.Physics.NetworkRigidbody2D
   _stateAuthorityChangeErrorCorrectionDelta: 0
   SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  DisableSharedModeInterpolation: 0
+  SyncParent: 1
+  _interpolationTarget: {fileID: 0}
+  UsePreciseRotation: 0
+  UseRenderSleepThresholds: 1
+  RenderThresholds:
+    UseEnergy: 1
+    Position: 0.01
+    Rotation: 0.01
+    Scale: 0.01
 --- !u!114 &6977800326643103964
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,6 +162,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PangPangShotNetwork.PlayerMovement
   moveSpeed: 5
+  moveAcceleration: 50
   jumpForce: 8
   gravity: -20
   groundCheck: {fileID: 1158664519547531962}
@@ -162,8 +170,35 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
-  spriteRenderer: {fileID: 0}
+  spriteRenderer: {fileID: 6250100694266739280}
   maxFallSpeed: 8
+--- !u!50 &7467558712539844014
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8145728996827313797}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
 --- !u!1 &8901942712545726343
 GameObject:
   m_ObjectHideFlags: 0
