@@ -223,3 +223,4 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   spriteRenderer: {fileID: 296851628393690979}
+  maxFallSpeed: 8

@@ -12,6 +12,8 @@ namespace PangPangShotNetwork
         [SerializeField] private float groundCheckRadius = 0.15f;
         [SerializeField] private LayerMask groundLayer;
         [SerializeField] private SpriteRenderer spriteRenderer;
+        // maxFallSpeed * Runner.DeltaTime must stay below groundCheckRadius to avoid tunneling through the ground on landing.
+        [SerializeField] private float maxFallSpeed = 8f;
 
         [Networked] private float VerticalVelocity { get; set; }
         [Networked] private NetworkButtons PreviousButtons { get; set; }
@@ -27,7 +29,7 @@ namespace PangPangShotNetwork
             else if (grounded)
                 VerticalVelocity = 0f;
             else
-                VerticalVelocity += gravity * Runner.DeltaTime;
+                VerticalVelocity = Mathf.Max(VerticalVelocity + gravity * Runner.DeltaTime, -maxFallSpeed);
 
             Vector3 delta = new Vector3(input.Move.x * moveSpeed, VerticalVelocity, 0f) * Runner.DeltaTime;
             transform.position += delta;
