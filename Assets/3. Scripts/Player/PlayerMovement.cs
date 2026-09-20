@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace PangPangShotNetwork
 {
+    // This Fusion package does not include NetworkRigidbody2D (a separate, uninstalled Fusion Addons
+    // package), so there is no networked physics body to drive. Instead, movement sets transform.position
+    // directly each tick, and the NetworkTransform component on this prefab replicates the result.
     public class PlayerMovement : NetworkBehaviour
     {
         [SerializeField] private float moveSpeed = 5f;
