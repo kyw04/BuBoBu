@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 8084290638946241050}
   - component: {fileID: 180273678089406248}
   - component: {fileID: 8776127644640013409}
+  - component: {fileID: 6977800326643103964}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -182,6 +183,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 8776127644640013409}
+  - {fileID: 6977800326643103964}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &8776127644640013409
 MonoBehaviour:
@@ -200,3 +202,24 @@ MonoBehaviour:
   SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 0
+--- !u!114 &6977800326643103964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8145728996827313797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6216aaf4b057074784c20c8066b17aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PangPangShotNetwork.PlayerMovement
+  moveSpeed: 5
+  jumpForce: 8
+  gravity: -20
+  groundCheck: {fileID: 1158664519547531962}
+  groundCheckRadius: 0.15
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  spriteRenderer: {fileID: 296851628393690979}
