@@ -7,9 +7,9 @@ namespace PangPangShotNetwork
     public class PlayerSpawner : SimulationBehaviour, IPlayerJoined, IPlayerLeft
     {
         [SerializeField] private NetworkPrefabRef playerPrefab;
-        [SerializeField] private Vector3 spawnPosition = new Vector3(0f, -1.6f, 0f);
+        [SerializeField] private Vector3 spawnPosition = new(0f, -1.6f, 0f);
 
-        private readonly Dictionary<PlayerRef, NetworkObject> spawnedPlayers = new Dictionary<PlayerRef, NetworkObject>();
+        private readonly Dictionary<PlayerRef, NetworkObject> spawnedPlayers = new();
 
         public void PlayerJoined(PlayerRef player)
         {
