@@ -1,10 +1,11 @@
 using Fusion;
-using Fusion.Addons.Physics;
+using PangPangShotNetwork;
 using UnityEngine;
 
-namespace PangPangShotNetwork
+namespace Player
 {
     [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(PlayerInputReader))]
     public class PlayerMovement : NetworkBehaviour
     {
         [SerializeField] private float moveSpeed = 5f;
@@ -19,27 +20,25 @@ namespace PangPangShotNetwork
         [SerializeField, Min(0f)] private float maxFallSpeed = 8f;
 
         private Rigidbody2D rb;
-
-        [Networked] private NetworkButtons PreviousButtons { get; set; }
+        private PlayerInputReader inputReader;
 
         public bool IsGrounded => Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
         public override void Spawned()
         {
             rb = GetComponent<Rigidbody2D>();
+            inputReader = GetComponent<PlayerInputReader>();
             rb.gravityScale = gravity / Physics2D.gravity.y;
         }
 
         public override void FixedUpdateNetwork()
         {
-            if (!GetInput(out NetworkInputData input)) return;
-
             bool grounded = IsGrounded;
 
-            float speedDiff = input.Move.x * moveSpeed - rb.linearVelocity.x;
+            float speedDiff = inputReader.Move.x * moveSpeed - rb.linearVelocity.x;
             rb.AddForce(Vector2.right * (speedDiff * moveAcceleration), ForceMode2D.Force);
 
-            if (grounded && input.Buttons.WasPressed(PreviousButtons, NetworkInputData.JumpButton))
+            if (grounded && inputReader.JumpPressed)
             {
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
                 rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
@@ -48,10 +47,8 @@ namespace PangPangShotNetwork
             if (rb.linearVelocity.y < -maxFallSpeed)
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, -maxFallSpeed);
 
-            if (input.Move.x != 0f)
-                spriteRenderer.flipX = input.Move.x < 0f;
-
-            PreviousButtons = input.Buttons;
+            if (inputReader.Move.x != 0f)
+                spriteRenderer.flipX = inputReader.Move.x < 0f;
         }
 
         private void OnDrawGizmosSelected()
