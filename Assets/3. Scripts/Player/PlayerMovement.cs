@@ -33,6 +33,8 @@ namespace Player
 
         public override void FixedUpdateNetwork()
         {
+            if (!inputReader.HasInput) return;
+
             bool grounded = IsGrounded;
 
             float speedDiff = inputReader.Move.x * moveSpeed - rb.linearVelocity.x;
