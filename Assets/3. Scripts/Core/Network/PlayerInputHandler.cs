@@ -28,6 +28,7 @@ namespace PangPangShotNetwork
                 Move = actions.Player.Move.ReadValue<Vector2>()
             };
             data.Buttons.Set(NetworkInputData.JumpButton, actions.Player.Jump.IsPressed());
+            data.Buttons.Set(NetworkInputData.AttackButton, actions.Player.Attack.IsPressed());
 
             input.Set(data);
         }
