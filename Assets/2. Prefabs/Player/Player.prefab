@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3255828030713076871
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1589101494678389375}
+  m_Layer: 0
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1589101494678389375
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3255828030713076871}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.6, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8509094750542212601}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5435315920340973386
 GameObject:
   m_ObjectHideFlags: 0
@@ -46,6 +77,7 @@ GameObject:
   - component: {fileID: 6977800326643103964}
   - component: {fileID: 7467558712539844014}
   - component: {fileID: 8634942417492196426}
+  - component: {fileID: 7412525986694740950}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -68,6 +100,7 @@ Transform:
   m_Children:
   - {fileID: 1158664519547531962}
   - {fileID: 2408537582036118711}
+  - {fileID: 1589101494678389375}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!70 &8084290638946241050
@@ -127,6 +160,7 @@ MonoBehaviour:
   - {fileID: -1839394710438608521}
   - {fileID: 6977800326643103964}
   - {fileID: 8634942417492196426}
+  - {fileID: 7412525986694740950}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &-1839394710438608521
 MonoBehaviour:
@@ -213,6 +247,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62a020db8cde5094da1b97b1d30cf375, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerInputReader
+--- !u!114 &7412525986694740950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8145728996827313797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc654a98fd5bb9d42a0c82484f87f57f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerFire
+  bulletPrefab:
+    RawGuidValue: 50aa76c010920b04ea640673c4b82cc6l
+  firePoint: {fileID: 1589101494678389375}
+  spriteRenderer: {fileID: 6250100694266739280}
+  fireCooldown: 0.25
+  bulletSpeed: 12
 --- !u!1 &8901942712545726343
 GameObject:
   m_ObjectHideFlags: 0
