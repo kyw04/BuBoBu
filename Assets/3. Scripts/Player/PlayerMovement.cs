@@ -4,8 +4,12 @@ using UnityEngine;
 
 namespace Player
 {
+    // Must run before PlayerFire each tick: PlayerFire reads spriteRenderer.flipX (set below) to pick a
+    // firing direction, via GetComponent rather than an event, so a stale flipX would fire one tick behind
+    // on a turn+attack tick. Runs after PlayerInputReader (-100), before default-order (0) PlayerFire.
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(PlayerInputReader))]
+    [DefaultExecutionOrder(-50)]
     public class PlayerMovement : NetworkBehaviour
     {
         [SerializeField] private float moveSpeed = 5f;
