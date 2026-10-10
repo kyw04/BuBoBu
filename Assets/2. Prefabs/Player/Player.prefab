@@ -72,12 +72,13 @@ GameObject:
   m_Component:
   - component: {fileID: 8509094750542212601}
   - component: {fileID: 8084290638946241050}
+  - component: {fileID: 7467558712539844014}
   - component: {fileID: 180273678089406248}
   - component: {fileID: -1839394710438608521}
   - component: {fileID: 6977800326643103964}
-  - component: {fileID: 7467558712539844014}
   - component: {fileID: 8634942417492196426}
   - component: {fileID: 7412525986694740950}
+  - component: {fileID: 4924933357840258966}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -140,6 +141,33 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 1, y: 2}
   m_Direction: 0
+--- !u!50 &7467558712539844014
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8145728996827313797}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
 --- !u!114 &180273678089406248
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -208,33 +236,6 @@ MonoBehaviour:
     m_Bits: 256
   spriteRenderer: {fileID: 6250100694266739280}
   maxFallSpeed: 8
---- !u!50 &7467558712539844014
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8145728996827313797}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 4
 --- !u!114 &8634942417492196426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -265,6 +266,33 @@ MonoBehaviour:
   spriteRenderer: {fileID: 6250100694266739280}
   fireCooldown: 0.25
   bulletSpeed: 12
+--- !u!114 &4924933357840258966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8145728996827313797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f7c1335eec34c14b5669bc76638b629, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStat
+  defaultStats:
+  - key: 0
+    value: 100
+  - key: 1
+    value: 100
+  - key: 2
+    value: 25
+  - key: 3
+    value: 0
+  - key: 4
+    value: 5
+  - key: 5
+    value: 8
+  - key: 6
+    value: 1
 --- !u!1 &8901942712545726343
 GameObject:
   m_ObjectHideFlags: 0
