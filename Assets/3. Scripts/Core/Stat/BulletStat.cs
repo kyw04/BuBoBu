@@ -5,7 +5,9 @@ public enum BulletStatType
 {
     Speed,
     Range,
+    UpRange,
     LifTime,
+    Size
 }
 
 [System.Serializable]
