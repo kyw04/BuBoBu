@@ -1,5 +1,4 @@
 using Fusion;
-using PangPangShotNetwork;
 using UnityEngine;
 
 namespace Player
@@ -9,12 +8,11 @@ namespace Player
     // on a turn+attack tick. Runs after PlayerInputReader (-100), before default-order (0) PlayerFire.
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(PlayerInputReader))]
+    [RequireComponent(typeof(IMoveStat))]
     [DefaultExecutionOrder(-50)]
     public class PlayerMovement : NetworkBehaviour
     {
-        [SerializeField] private float moveSpeed = 5f;
         [SerializeField] private float moveAcceleration = 50f;
-        [SerializeField] private float jumpForce = 8f;
         [SerializeField] private float gravity = -20f;
         [SerializeField] private Transform groundCheck;
         [SerializeField] private float groundCheckRadius = 0.15f;
@@ -25,14 +23,18 @@ namespace Player
 
         private Rigidbody2D rb;
         private PlayerInputReader inputReader;
-
+        private IMoveStat stat;
+        
         public bool IsGrounded => Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
         public override void Spawned()
         {
             rb = GetComponent<Rigidbody2D>();
-            inputReader = GetComponent<PlayerInputReader>();
             rb.gravityScale = gravity / Physics2D.gravity.y;
+
+            inputReader = GetComponent<PlayerInputReader>();
+            stat = GetComponent<IMoveStat>();
+            Debug.Log($"stat -> move speed: {stat.MoveSpeed}");
         }
 
         public override void FixedUpdateNetwork()
@@ -41,13 +43,13 @@ namespace Player
 
             bool grounded = IsGrounded;
 
-            float speedDiff = inputReader.Move.x * moveSpeed - rb.linearVelocity.x;
+            float speedDiff = inputReader.Move.x * stat.MoveSpeed - rb.linearVelocity.x;
             rb.AddForce(Vector2.right * (speedDiff * moveAcceleration), ForceMode2D.Force);
 
             if (grounded && inputReader.JumpPressed)
             {
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
-                rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                rb.AddForce(Vector2.up * stat.JumpPower, ForceMode2D.Impulse);
             }
 
             if (rb.linearVelocity.y < -maxFallSpeed)

@@ -23,9 +23,9 @@ public abstract class StatContainer<TStatEnum> : MonoBehaviour where TStatEnum :
 
     public float GetStat(TStatEnum type)
     {
-        DefaultStats.TryGetValue(type, out var baseValue);
-        bonusStats.TryGetValue(type, out var bonus);
-        multiplierStats.TryGetValue(type, out var multiplier);
+        float baseValue = DefaultStats.GetValueOrDefault(type, 0f);
+        float bonus = bonusStats.GetValueOrDefault(type, 0f);
+        float multiplier = multiplierStats.GetValueOrDefault(type, 1f);
         return (baseValue + bonus) * multiplier;
     }
 }

@@ -12,9 +12,32 @@ public enum PlayerStatType
     JumpCount,
 }
 
+public interface ICombatStat
+{
+    float Health { get; }
+    float MaxHealth { get; }
+    float Damage { get; }
+    float Defense { get; }
+}
+
+public interface IMoveStat
+{
+    float MoveSpeed { get; }
+    float JumpPower { get; }
+    float JumpCount { get; }
+}
+
 [System.Serializable]
-public class PlayerStat : StatContainer<PlayerStatType>
+public class PlayerStat : StatContainer<PlayerStatType>, ICombatStat, IMoveStat
 {
     [SerializeField] private Dictionary<PlayerStatType, float> defaultStats = new();
     protected override Dictionary<PlayerStatType, float> DefaultStats => defaultStats;
+
+    public float Health => GetStat(PlayerStatType.Health);
+    public float MaxHealth => GetStat(PlayerStatType.MaxHealth);
+    public float Damage => GetStat(PlayerStatType.Damage);
+    public float Defense => GetStat(PlayerStatType.Defense);
+    public float MoveSpeed => GetStat(PlayerStatType.Speed);
+    public float JumpPower => GetStat(PlayerStatType.JumpPower);
+    public float JumpCount => GetStat(PlayerStatType.JumpCount);
 }
