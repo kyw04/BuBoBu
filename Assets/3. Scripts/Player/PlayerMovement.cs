@@ -24,6 +24,8 @@ namespace Player
         private Rigidbody2D rb;
         private PlayerInputReader inputReader;
         private IMoveStat stat;
+
+        private float jumpingCount = 0;
         
         public bool IsGrounded => Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
@@ -34,20 +36,21 @@ namespace Player
 
             inputReader = GetComponent<PlayerInputReader>();
             stat = GetComponent<IMoveStat>();
-            Debug.Log($"stat -> move speed: {stat.MoveSpeed}");
         }
 
         public override void FixedUpdateNetwork()
         {
             if (!inputReader.HasInput) return;
 
-            bool grounded = IsGrounded;
-
             float speedDiff = inputReader.Move.x * stat.MoveSpeed - rb.linearVelocity.x;
             rb.AddForce(Vector2.right * (speedDiff * moveAcceleration), ForceMode2D.Force);
 
-            if (grounded && inputReader.JumpPressed)
+            bool grounded = IsGrounded;
+            if (grounded && rb.linearVelocity.y <= 0.01f)
+                jumpingCount = 0;
+            if (inputReader.JumpPressed && jumpingCount < stat.JumpCount)
             {
+                jumpingCount++;
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
                 rb.AddForce(Vector2.up * stat.JumpPower, ForceMode2D.Impulse);
             }
