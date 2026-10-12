@@ -25,12 +25,146 @@ Transform:
   m_GameObject: {fileID: 3255828030713076871}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.6, y: 0, z: 0}
+  m_LocalPosition: {x: 0.2, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
+  m_Father: {fileID: 589859788394532103}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5208859405917070540
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 589859788394532103}
+  - component: {fileID: 2456993118909662711}
+  - component: {fileID: 5647827426344187008}
+  - component: {fileID: 6291377031919603107}
+  m_Layer: 0
+  m_Name: Gun
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &589859788394532103
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5208859405917070540}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.81, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1589101494678389375}
   m_Father: {fileID: 8509094750542212601}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &2456993118909662711
+SpriteRenderer:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5208859405917070540}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 21300000, guid: f6748fb9acd7dc24bbce7b97ab271883, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 0.2, y: 0.2}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
+--- !u!114 &5647827426344187008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5208859405917070540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7ab3cc5143b68740844a934f2974980, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Gun
+  stats: {fileID: 6291377031919603107}
+  bulletPrefab:
+    RawGuidValue: 50aa76c010920b04ea640673c4b82cc6l
+  firePoint: {fileID: 1589101494678389375}
+--- !u!114 &6291377031919603107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5208859405917070540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4d76584cc07410a86e6907b9e7104cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GunStats
+  defaultStats:
+  - key: 1
+    value: 30
+  - key: 0
+    value: 5
+  - key: 2
+    value: 2
+  - key: 4
+    value: 1
+  - key: 3
+    value: 1
 --- !u!1 &5435315920340973386
 GameObject:
   m_ObjectHideFlags: 0
@@ -101,7 +235,7 @@ Transform:
   m_Children:
   - {fileID: 1158664519547531962}
   - {fileID: 2408537582036118711}
-  - {fileID: 1589101494678389375}
+  - {fileID: 589859788394532103}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!70 &8084290638946241050
@@ -189,6 +323,9 @@ MonoBehaviour:
   - {fileID: 6977800326643103964}
   - {fileID: 8634942417492196426}
   - {fileID: 7412525986694740950}
+  - {fileID: 4924933357840258966}
+  - {fileID: 5647827426344187008}
+  - {fileID: 6291377031919603107}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &-1839394710438608521
 MonoBehaviour:
@@ -225,9 +362,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6216aaf4b057074784c20c8066b17aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PangPangShotNetwork.PlayerMovement
-  moveSpeed: 5
   moveAcceleration: 50
-  jumpForce: 8
   gravity: -20
   groundCheck: {fileID: 1158664519547531962}
   groundCheckRadius: 0.15
@@ -260,12 +395,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc654a98fd5bb9d42a0c82484f87f57f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerFire
-  bulletPrefab:
-    RawGuidValue: 50aa76c010920b04ea640673c4b82cc6l
-  firePoint: {fileID: 1589101494678389375}
-  spriteRenderer: {fileID: 6250100694266739280}
-  fireCooldown: 0.25
-  bulletSpeed: 12
+  gun: {fileID: 5647827426344187008}
 --- !u!114 &4924933357840258966
 MonoBehaviour:
   m_ObjectHideFlags: 0
