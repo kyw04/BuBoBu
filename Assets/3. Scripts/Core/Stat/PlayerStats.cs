@@ -28,10 +28,10 @@ public interface IMoveStat
 }
 
 [System.Serializable]
-public class PlayerStat : StatContainer<PlayerStatType>, ICombatStat, IMoveStat
+public class PlayerStats : StatContainer<PlayerStatType>, ICombatStat, IMoveStat
 {
     [SerializeField] private Dictionary<PlayerStatType, float> defaultStats = new();
-    protected override Dictionary<PlayerStatType, float> DefaultStats => defaultStats;
+    protected override IReadOnlyDictionary<PlayerStatType, float> DefaultStats => defaultStats;
 
     public float Health => GetStat(PlayerStatType.Health);
     public float MaxHealth => GetStat(PlayerStatType.MaxHealth);
