@@ -371,6 +371,9 @@ MonoBehaviour:
     m_Bits: 256
   spriteRenderer: {fileID: 6250100694266739280}
   maxFallSpeed: 8
+  facingTargets:
+  - {fileID: 2408537582036118711}
+  - {fileID: 589859788394532103}
 --- !u!114 &8634942417492196426
 MonoBehaviour:
   m_ObjectHideFlags: 0
