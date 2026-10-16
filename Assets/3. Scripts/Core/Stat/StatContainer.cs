@@ -1,31 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
+using Fusion;
+using Unity.Collections.LowLevel.Unsafe;
 
-[Serializable]
-public abstract class StatContainer<TStatEnum> : MonoBehaviour where TStatEnum : Enum
+public abstract class StatContainerBase : NetworkBehaviour
 {
-    protected abstract Dictionary<TStatEnum, float> DefaultStats { get; }
-    private readonly  Dictionary<TStatEnum, float> bonusStats = new();
-    private readonly  Dictionary<TStatEnum, float> multiplierStats = new();
+    protected const int MaxStats = 16;
 
-    public void SetDefaultStat(TStatEnum type, float value) => DefaultStats[type] = value;
-    public void SetBonusStat(TStatEnum type, float value) => bonusStats[type] = value;
-    public void SetMultiplierStat(TStatEnum type, float value) => multiplierStats[type] = value;
-    public float GetDefaultStat(TStatEnum type) => DefaultStats.GetValueOrDefault(type, 0f);
-    public float GetBonusStat(TStatEnum type) => bonusStats.GetValueOrDefault(type, 0f);
+    [Networked, Capacity(MaxStats)] protected NetworkArray<float> Bonus => default;
+    // 0이면 ×1. 0.2면 ×0.2
+    [Networked, Capacity(MaxStats)] protected NetworkArray<float> MultiplierBonus => default;
+}
 
-    public void AddBonusStat(TStatEnum type, float value)
+public abstract class StatContainer<TStat> : StatContainerBase where TStat : unmanaged, Enum
+{
+    protected abstract IReadOnlyDictionary<TStat, float> DefaultStats { get; }
+
+    private static int Idx(TStat type) => UnsafeUtility.EnumToInt(type);
+
+    public float GetDefaultStat(TStat type) => DefaultStats.GetValueOrDefault(type, 0f);
+    public float GetBonusStat(TStat type) => Bonus[Idx(type)];
+
+    public void SetBonusStat(TStat type, float value) => Bonus.Set(Idx(type), value);
+    public void AddBonusStat(TStat type, float value) => Bonus.Set(Idx(type), Bonus[Idx(type)] + value);
+    public void SetMultiplierBonus(TStat type, float value) => MultiplierBonus.Set(Idx(type), value);
+
+    public float GetStat(TStat type)
     {
-        bonusStats.TryGetValue(type, out var current);
-        bonusStats[type] = current + value;
-    }
-
-    public float GetStat(TStatEnum type)
-    {
-        float baseValue = DefaultStats.GetValueOrDefault(type, 0f);
-        float bonus = bonusStats.GetValueOrDefault(type, 0f);
-        float multiplier = multiplierStats.GetValueOrDefault(type, 1f);
-        return (baseValue + bonus) * multiplier;
+        int i = Idx(type);
+        float mul = MultiplierBonus[i] == 0 ? 1f : MultiplierBonus[i];
+        return (GetDefaultStat(type) + Bonus[i]) * mul;
     }
 }

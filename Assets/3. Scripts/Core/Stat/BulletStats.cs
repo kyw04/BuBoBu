@@ -11,8 +11,8 @@ public enum BulletStatType
 }
 
 [System.Serializable]
-public class BulletStat : StatContainer<BulletStatType>
+public class BulletStats : StatContainer<BulletStatType>
 {
     [SerializeField] private Dictionary<BulletStatType, float> defaultStats = new();
-    protected override Dictionary<BulletStatType, float> DefaultStats => defaultStats;
+    protected override IReadOnlyDictionary<BulletStatType, float> DefaultStats => defaultStats;
 }

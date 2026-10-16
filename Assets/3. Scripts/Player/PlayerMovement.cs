@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace Player
 {
-    // Must run before PlayerFire each tick: PlayerFire reads spriteRenderer.flipX (set below) to pick a
-    // firing direction, via GetComponent rather than an event, so a stale flipX would fire one tick behind
-    // on a turn+attack tick. Runs after PlayerInputReader (-100), before default-order (0) PlayerFire.
+    // Must run before PlayerFire each tick: Gun derives its firing direction from the facing applied below,
+    // so a stale facing would fire one tick behind on a turn+attack tick.
+    // Runs after PlayerInputReader (-100), before default-order (0) PlayerFire.
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(PlayerInputReader))]
     [RequireComponent(typeof(IMoveStat))]
@@ -20,10 +20,18 @@ namespace Player
         [SerializeField] private SpriteRenderer spriteRenderer;
         // maxFallSpeed * Runner.DeltaTime must stay below groundCheckRadius to avoid tunneling through the ground on landing.
         [SerializeField, Min(0f)] private float maxFallSpeed = 8f;
+        // Children mirrored on facing left. Facing can't rotate the root: NetworkRigidbody2D syncs only the Z
+        // angle and overwrites the root rotation every Render, so a Y flip there is erased and never replicated.
+        [SerializeField] private Transform[] facingTargets;
+
+        [Networked] private NetworkBool IsFacingLeft { get; set; }
 
         private Rigidbody2D rb;
         private PlayerInputReader inputReader;
         private IMoveStat stat;
+
+        private float jumpingCount = 0;
+        private float[] facingTargetBaseX;
         
         public bool IsGrounded => Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
@@ -34,20 +42,26 @@ namespace Player
 
             inputReader = GetComponent<PlayerInputReader>();
             stat = GetComponent<IMoveStat>();
-            Debug.Log($"stat -> move speed: {stat.MoveSpeed}");
+
+            facingTargetBaseX = new float[facingTargets.Length];
+            for (int i = 0; i < facingTargets.Length; i++)
+                facingTargetBaseX[i] = Mathf.Abs(facingTargets[i].localPosition.x);
+            ApplyFacing();
         }
 
         public override void FixedUpdateNetwork()
         {
             if (!inputReader.HasInput) return;
 
-            bool grounded = IsGrounded;
-
             float speedDiff = inputReader.Move.x * stat.MoveSpeed - rb.linearVelocity.x;
             rb.AddForce(Vector2.right * (speedDiff * moveAcceleration), ForceMode2D.Force);
 
-            if (grounded && inputReader.JumpPressed)
+            bool grounded = IsGrounded;
+            if (grounded && rb.linearVelocity.y <= 0.01f)
+                jumpingCount = 0;
+            if (inputReader.JumpPressed && jumpingCount < stat.JumpCount)
             {
+                jumpingCount++;
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
                 rb.AddForce(Vector2.up * stat.JumpPower, ForceMode2D.Impulse);
             }
@@ -56,7 +70,26 @@ namespace Player
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, -maxFallSpeed);
 
             if (inputReader.Move.x != 0f)
-                spriteRenderer.flipX = inputReader.Move.x < 0f;
+                IsFacingLeft = inputReader.Move.x < 0f;
+            ApplyFacing();
+        }
+
+        public override void Render()
+        {
+            ApplyFacing();
+        }
+
+        private void ApplyFacing()
+        {
+            bool left = IsFacingLeft;
+            for (int i = 0; i < facingTargets.Length; i++)
+            {
+                Transform t = facingTargets[i];
+                Vector3 pos = t.localPosition;
+                pos.x = left ? -facingTargetBaseX[i] : facingTargetBaseX[i];
+                t.localPosition = pos;
+                t.localRotation = Quaternion.Euler(0f, left ? 180f : 0f, 0f);
+            }
         }
 
         private void OnDrawGizmosSelected()

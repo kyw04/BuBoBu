@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5614129751817486009}
   - component: {fileID: 4938954020459018359}
   - component: {fileID: 664236586181172622}
+  - component: {fileID: -1429590751756025845}
   m_Layer: 0
   m_Name: Bullet
   m_TagString: Untagged
@@ -114,6 +115,7 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 4938954020459018359}
   - {fileID: 664236586181172622}
+  - {fileID: -1429590751756025845}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &4938954020459018359
 MonoBehaviour:
@@ -144,4 +146,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f02e4a5b73691b429d8ec67c8b0a066, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player.Bullet
-  lifetimeSeconds: 2
+  _stats: {fileID: -1429590751756025845}
+--- !u!114 &-1429590751756025845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3920764434206075589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a2e9be095864fa6885643001555113e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BulletStats
+  defaultStats:
+  - key: 0
+    value: 1.5
+  - key: 1
+    value: 1.5
+  - key: 2
+    value: 3
