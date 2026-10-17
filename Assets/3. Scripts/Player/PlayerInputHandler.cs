@@ -19,6 +19,7 @@ namespace PangPangShotNetwork
 
         private void OnDestroy()
         {
+            actions.Player.Disable();
             actions.Dispose();
         }
 
