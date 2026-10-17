@@ -138,7 +138,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7ab3cc5143b68740844a934f2974980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gun
-  stats: {fileID: 6291377031919603107}
   bulletPrefab:
     RawGuidValue: 50aa76c010920b04ea640673c4b82cc6l
   firePoint: {fileID: 1589101494678389375}
@@ -164,6 +163,8 @@ MonoBehaviour:
   - key: 4
     value: 1
   - key: 3
+    value: 1
+  - key: 5
     value: 1
 --- !u!1 &5435315920340973386
 GameObject:

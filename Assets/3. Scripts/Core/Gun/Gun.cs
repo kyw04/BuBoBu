@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Gun : NetworkBehaviour
 {
-    [SerializeField] private GunStats stats;
+    public GunStats stats { get; private set; }
     [SerializeField] private NetworkPrefabRef bulletPrefab;
     [SerializeField] private Transform firePoint;
 
@@ -13,6 +13,11 @@ public class Gun : NetworkBehaviour
 
     private Entity owner;
     private float orbitRadius;
+
+    private void Awake()
+    {
+        stats = GetComponent<GunStats>();
+    }
 
     public override void Spawned()
     {

@@ -20,7 +20,7 @@ public class Bullet : NetworkBehaviour, IAttacker
             stats = GetComponent<BulletStats>();
 
         Owner = owner;
-        Damage = owner.stats.Damage;
+        Damage = owner.Damage;
         Direction = direction;
         Speed = stats.GetStat(BulletStatType.Speed);
         Range = stats.GetStat(BulletStatType.Range);

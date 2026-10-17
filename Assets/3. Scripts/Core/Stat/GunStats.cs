@@ -7,13 +7,20 @@ public enum GunStatType
     Range,
     ReloadTime,
     FireSpeed,
-    BulletCount
+    BulletCount,
+    DamageMultiplier
+}
+
+public interface IDamageMultiplier
+{
+    float DamageMultiplier { get; }
 }
 
 [System.Serializable]
-public class GunStats : StatContainer<GunStatType>
+public class GunStats : StatContainer<GunStatType>, IDamageMultiplier
 {
     [SerializeField] private Dictionary<GunStatType, float> defaultStats = new();
     protected override IReadOnlyDictionary<GunStatType, float> DefaultStats => defaultStats;
+    public float DamageMultiplier => GetStat(GunStatType.DamageMultiplier);
 }
 
