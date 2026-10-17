@@ -209,10 +209,11 @@ GameObject:
   - component: {fileID: 7467558712539844014}
   - component: {fileID: 180273678089406248}
   - component: {fileID: -1839394710438608521}
+  - component: {fileID: 3415703231150103199}
+  - component: {fileID: 4924933357840258966}
   - component: {fileID: 6977800326643103964}
   - component: {fileID: 8634942417492196426}
   - component: {fileID: 7412525986694740950}
-  - component: {fileID: 4924933357840258966}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -320,10 +321,11 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: -1839394710438608521}
+  - {fileID: 3415703231150103199}
+  - {fileID: 4924933357840258966}
   - {fileID: 6977800326643103964}
   - {fileID: 8634942417492196426}
   - {fileID: 7412525986694740950}
-  - {fileID: 4924933357840258966}
   - {fileID: 5647827426344187008}
   - {fileID: 6291377031919603107}
   ForceRemoteRenderTimeframe: 0
@@ -350,6 +352,45 @@ MonoBehaviour:
     Position: 0.01
     Rotation: 0.01
     Scale: 0.01
+--- !u!114 &3415703231150103199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8145728996827313797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7553f3ae8e74842ba707cc2396466f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Entity
+--- !u!114 &4924933357840258966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8145728996827313797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f7c1335eec34c14b5669bc76638b629, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStat
+  defaultStats:
+  - key: 0
+    value: 100
+  - key: 1
+    value: 100
+  - key: 2
+    value: 25
+  - key: 3
+    value: 0
+  - key: 4
+    value: 5
+  - key: 5
+    value: 8
+  - key: 6
+    value: 1
 --- !u!114 &6977800326643103964
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -398,33 +439,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerFire
   gun: {fileID: 5647827426344187008}
---- !u!114 &4924933357840258966
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8145728996827313797}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f7c1335eec34c14b5669bc76638b629, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerStat
-  defaultStats:
-  - key: 0
-    value: 100
-  - key: 1
-    value: 100
-  - key: 2
-    value: 25
-  - key: 3
-    value: 0
-  - key: 4
-    value: 5
-  - key: 5
-    value: 8
-  - key: 6
-    value: 1
 --- !u!1 &8901942712545726343
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,10 +11,12 @@ public class Gun : NetworkBehaviour
     [Networked] private int BulletCount { get; set; }
     [Networked] private Vector2 AimDirection { get; set; }
 
+    private Entity owner;
     private float orbitRadius;
 
     public override void Spawned()
     {
+        owner = GetComponentInParent<Entity>();
         orbitRadius = transform.localPosition.magnitude;
         ApplyAim();
     }
@@ -42,7 +44,7 @@ public class Gun : NetworkBehaviour
         Vector2 direction = firePoint.position - transform.position;
         Runner.Spawn(bulletPrefab, firePoint.position, onBeforeSpawned: (runner, obj) =>
         {
-            obj.GetComponent<Bullet>().Initialize(runner, direction.normalized);
+            obj.GetComponent<Bullet>().Initialize(owner, runner, direction.normalized);
         });
     }
 

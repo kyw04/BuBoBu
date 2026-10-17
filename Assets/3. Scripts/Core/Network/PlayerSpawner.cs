@@ -24,7 +24,7 @@ namespace PangPangShotNetwork
             if (!Runner.IsServer) return;
             if (!spawnedPlayers.TryGetValue(player, out NetworkObject playerObject)) return;
 
-            Runner.Despawn(playerObject);
+            if (playerObject) Runner.Despawn(playerObject); // 사망으로 이미 Despawn된 경우 제외
             spawnedPlayers.Remove(player);
         }
     }
