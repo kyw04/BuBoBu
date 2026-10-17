@@ -12,6 +12,7 @@ namespace Player
         [Networked] private NetworkButtons PreviousButtons { get; set; }
 
         public Vector2 Move { get; private set; }
+        public Vector2 AimPoint { get; private set; }
         public bool JumpPressed { get; private set; }
         public bool AttackPressed { get; private set; }
         public bool HasInput { get; private set; }
@@ -29,6 +30,7 @@ namespace Player
 
             HasInput = true;
             Move = input.Move;
+            AimPoint = input.AimPoint;
             JumpPressed = input.Buttons.WasPressed(PreviousButtons, NetworkInputData.JumpButton);
             AttackPressed = input.Buttons.WasPressed(PreviousButtons, NetworkInputData.AttackButton);
 

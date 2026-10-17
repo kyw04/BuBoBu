@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Bullet : NetworkBehaviour
 {
-    [Networked] public BulletStats stats { get; private set; }
+    [Networked] private BulletStats stats { get; set; }
 
     [Networked] private Vector2 Direction { get; set; }
     [Networked] private TickTimer LifeTimer { get; set; }
@@ -11,9 +11,11 @@ public class Bullet : NetworkBehaviour
     [Networked] private float Speed { get; set; }
     [Networked] private float Range { get; set; }
     
-    
     public void Initialize(NetworkRunner runner, Vector2 direction)
     {
+        if (stats == null)
+            stats = GetComponent<BulletStats>();
+        
         Direction = direction;
         Speed = stats.GetStat(BulletStatType.Speed);
         Range = stats.GetStat(BulletStatType.Range);

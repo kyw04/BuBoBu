@@ -16,10 +16,11 @@ namespace Player
 
         public override void FixedUpdateNetwork()
         {
-            // Runner.Spawn must only be called by the State Authority (see PlayerSpawner for the same guard);
-            // without this, the input-authority client would also attempt to spawn during prediction.
-            if (!Runner.IsServer) return;
             if (!inputReader.HasInput) return;
+
+            gun.Aim(inputReader.AimPoint);
+
+            if (!Runner.IsServer) return;
             if (!inputReader.AttackPressed) return;
             
             gun.Fire();

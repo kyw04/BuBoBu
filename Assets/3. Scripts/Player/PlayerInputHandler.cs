@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace PangPangShotNetwork
 {
@@ -25,12 +26,25 @@ namespace PangPangShotNetwork
         {
             var data = new NetworkInputData
             {
-                Move = actions.Player.Move.ReadValue<Vector2>()
+                Move = actions.Player.Move.ReadValue<Vector2>(),
+                AimPoint = ReadAimPoint()
             };
             data.Buttons.Set(NetworkInputData.JumpButton, actions.Player.Jump.IsPressed());
             data.Buttons.Set(NetworkInputData.AttackButton, actions.Player.Attack.IsPressed());
 
             input.Set(data);
+        }
+
+        private Vector2 ReadAimPoint()
+        {
+            Camera cam = Camera.main;
+            if (cam == null)
+                return Vector2.zero;
+
+            Vector3 screen = actions.Player.MousePosition.ReadValue<Vector2>();
+            screen.z = -cam.transform.position.z;
+            
+            return cam.ScreenToWorldPoint(screen);
         }
 
         public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }

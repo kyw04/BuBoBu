@@ -3,9 +3,8 @@ using UnityEngine;
 
 namespace Player
 {
-    // Must run before PlayerFire each tick: Gun derives its firing direction from the facing applied below,
-    // so a stale facing would fire one tick behind on a turn+attack tick.
-    // Runs after PlayerInputReader (-100), before default-order (0) PlayerFire.
+    // Runs after PlayerInputReader (-100) so Move/AimPoint are current this tick.
+    // The gun is not a facing target: Gun rotates itself toward AimPoint (see Gun.Aim).
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(PlayerInputReader))]
     [RequireComponent(typeof(IMoveStat))]
@@ -69,8 +68,9 @@ namespace Player
             if (rb.linearVelocity.y < -maxFallSpeed)
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, -maxFallSpeed);
 
-            if (inputReader.Move.x != 0f)
-                IsFacingLeft = inputReader.Move.x < 0f;
+            float aimOffsetX = inputReader.AimPoint.x - transform.position.x;
+            if (aimOffsetX != 0f)
+                IsFacingLeft = aimOffsetX < 0f;
             ApplyFacing();
         }
 

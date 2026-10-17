@@ -6,9 +6,32 @@ public class Gun : NetworkBehaviour
     [SerializeField] private GunStats stats;
     [SerializeField] private NetworkPrefabRef bulletPrefab;
     [SerializeField] private Transform firePoint;
-    
+
     [Networked] private TickTimer CooldownTimer { get; set; }
     [Networked] private int BulletCount { get; set; }
+    [Networked] private Vector2 AimDirection { get; set; }
+
+    private float orbitRadius;
+
+    public override void Spawned()
+    {
+        orbitRadius = transform.localPosition.magnitude;
+        ApplyAim();
+    }
+
+    public void Aim(Vector2 aimPoint)
+    {
+        Vector2 direction = aimPoint - (Vector2)transform.parent.position;
+        if (direction.sqrMagnitude < 0.0001f) return;
+
+        AimDirection = direction.normalized;
+        ApplyAim();
+    }
+
+    public override void Render()
+    {
+        ApplyAim();
+    }
 
     public void Fire()
     {
@@ -21,5 +44,18 @@ public class Gun : NetworkBehaviour
         {
             obj.GetComponent<Bullet>().Initialize(runner, direction.normalized);
         });
+    }
+
+    private void ApplyAim()
+    {
+        Vector2 direction = AimDirection == Vector2.zero ? Vector2.right : AimDirection;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        transform.localPosition = direction * orbitRadius;
+        transform.localRotation = Quaternion.Euler(0f, 0f, angle);
+
+        Vector3 scale = transform.localScale;
+        scale.y = Mathf.Abs(scale.y) * (direction.x < 0f ? -1f : 1f);
+        transform.localScale = scale;
     }
 }
