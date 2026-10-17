@@ -24,6 +24,7 @@ namespace Player
             if (Mathf.Approximately(ratio, oldRatio))
                 return;
             
+            oldRatio = ratio;
             healthBar.fillAmount = ratio;
         }
     }
