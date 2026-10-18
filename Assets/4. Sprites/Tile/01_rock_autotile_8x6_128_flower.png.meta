@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 2175ddcda696d1945ac7bdcdee5b9296
+guid: 959ce7f05a48a1e4998e95bb8d148983
 TextureImporter:
   internalIDToNameTable:
   - first:
       213: -2866789200770935144
-    second: rock_autotile_8x6_128_flower_v2_0
+    second: 01_rock_autotile_8x6_128_flower_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -115,7 +115,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_0
+      name: 01_rock_autotile_8x6_128_flower_0
       rect:
         serializedVersion: 2
         x: 0
@@ -137,7 +137,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_1
+      name: 01_rock_autotile_8x6_128_flower_1
       rect:
         serializedVersion: 2
         x: 128
@@ -159,7 +159,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_2
+      name: 01_rock_autotile_8x6_128_flower_2
       rect:
         serializedVersion: 2
         x: 256
@@ -181,7 +181,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_3
+      name: 01_rock_autotile_8x6_128_flower_3
       rect:
         serializedVersion: 2
         x: 384
@@ -203,7 +203,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_4
+      name: 01_rock_autotile_8x6_128_flower_4
       rect:
         serializedVersion: 2
         x: 512
@@ -225,7 +225,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_5
+      name: 01_rock_autotile_8x6_128_flower_5
       rect:
         serializedVersion: 2
         x: 640
@@ -247,7 +247,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_6
+      name: 01_rock_autotile_8x6_128_flower_6
       rect:
         serializedVersion: 2
         x: 768
@@ -269,7 +269,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_7
+      name: 01_rock_autotile_8x6_128_flower_7
       rect:
         serializedVersion: 2
         x: 896
@@ -291,7 +291,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_8
+      name: 01_rock_autotile_8x6_128_flower_8
       rect:
         serializedVersion: 2
         x: 0
@@ -313,7 +313,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_9
+      name: 01_rock_autotile_8x6_128_flower_9
       rect:
         serializedVersion: 2
         x: 128
@@ -335,7 +335,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_10
+      name: 01_rock_autotile_8x6_128_flower_10
       rect:
         serializedVersion: 2
         x: 256
@@ -357,7 +357,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_11
+      name: 01_rock_autotile_8x6_128_flower_11
       rect:
         serializedVersion: 2
         x: 384
@@ -379,7 +379,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_12
+      name: 01_rock_autotile_8x6_128_flower_12
       rect:
         serializedVersion: 2
         x: 512
@@ -401,7 +401,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_13
+      name: 01_rock_autotile_8x6_128_flower_13
       rect:
         serializedVersion: 2
         x: 640
@@ -423,7 +423,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_14
+      name: 01_rock_autotile_8x6_128_flower_14
       rect:
         serializedVersion: 2
         x: 768
@@ -445,7 +445,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_15
+      name: 01_rock_autotile_8x6_128_flower_15
       rect:
         serializedVersion: 2
         x: 896
@@ -467,7 +467,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_16
+      name: 01_rock_autotile_8x6_128_flower_16
       rect:
         serializedVersion: 2
         x: 0
@@ -489,7 +489,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_17
+      name: 01_rock_autotile_8x6_128_flower_17
       rect:
         serializedVersion: 2
         x: 128
@@ -511,7 +511,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_18
+      name: 01_rock_autotile_8x6_128_flower_18
       rect:
         serializedVersion: 2
         x: 256
@@ -533,7 +533,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_19
+      name: 01_rock_autotile_8x6_128_flower_19
       rect:
         serializedVersion: 2
         x: 384
@@ -555,7 +555,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_20
+      name: 01_rock_autotile_8x6_128_flower_20
       rect:
         serializedVersion: 2
         x: 512
@@ -577,7 +577,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_21
+      name: 01_rock_autotile_8x6_128_flower_21
       rect:
         serializedVersion: 2
         x: 640
@@ -599,7 +599,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_22
+      name: 01_rock_autotile_8x6_128_flower_22
       rect:
         serializedVersion: 2
         x: 768
@@ -621,7 +621,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_23
+      name: 01_rock_autotile_8x6_128_flower_23
       rect:
         serializedVersion: 2
         x: 896
@@ -643,7 +643,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_24
+      name: 01_rock_autotile_8x6_128_flower_24
       rect:
         serializedVersion: 2
         x: 0
@@ -665,7 +665,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_25
+      name: 01_rock_autotile_8x6_128_flower_25
       rect:
         serializedVersion: 2
         x: 128
@@ -687,7 +687,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_26
+      name: 01_rock_autotile_8x6_128_flower_26
       rect:
         serializedVersion: 2
         x: 256
@@ -709,7 +709,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_27
+      name: 01_rock_autotile_8x6_128_flower_27
       rect:
         serializedVersion: 2
         x: 384
@@ -731,7 +731,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_28
+      name: 01_rock_autotile_8x6_128_flower_28
       rect:
         serializedVersion: 2
         x: 512
@@ -753,7 +753,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_29
+      name: 01_rock_autotile_8x6_128_flower_29
       rect:
         serializedVersion: 2
         x: 640
@@ -775,7 +775,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_30
+      name: 01_rock_autotile_8x6_128_flower_30
       rect:
         serializedVersion: 2
         x: 768
@@ -797,7 +797,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_31
+      name: 01_rock_autotile_8x6_128_flower_31
       rect:
         serializedVersion: 2
         x: 896
@@ -819,7 +819,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_32
+      name: 01_rock_autotile_8x6_128_flower_32
       rect:
         serializedVersion: 2
         x: 0
@@ -841,7 +841,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_33
+      name: 01_rock_autotile_8x6_128_flower_33
       rect:
         serializedVersion: 2
         x: 128
@@ -863,7 +863,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_34
+      name: 01_rock_autotile_8x6_128_flower_34
       rect:
         serializedVersion: 2
         x: 256
@@ -885,7 +885,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_35
+      name: 01_rock_autotile_8x6_128_flower_35
       rect:
         serializedVersion: 2
         x: 384
@@ -907,7 +907,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_36
+      name: 01_rock_autotile_8x6_128_flower_36
       rect:
         serializedVersion: 2
         x: 512
@@ -929,7 +929,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_37
+      name: 01_rock_autotile_8x6_128_flower_37
       rect:
         serializedVersion: 2
         x: 640
@@ -951,7 +951,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_38
+      name: 01_rock_autotile_8x6_128_flower_38
       rect:
         serializedVersion: 2
         x: 768
@@ -973,7 +973,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_39
+      name: 01_rock_autotile_8x6_128_flower_39
       rect:
         serializedVersion: 2
         x: 896
@@ -995,7 +995,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_40
+      name: 01_rock_autotile_8x6_128_flower_40
       rect:
         serializedVersion: 2
         x: 0
@@ -1017,7 +1017,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_41
+      name: 01_rock_autotile_8x6_128_flower_41
       rect:
         serializedVersion: 2
         x: 128
@@ -1039,7 +1039,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_42
+      name: 01_rock_autotile_8x6_128_flower_42
       rect:
         serializedVersion: 2
         x: 256
@@ -1061,7 +1061,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_43
+      name: 01_rock_autotile_8x6_128_flower_43
       rect:
         serializedVersion: 2
         x: 384
@@ -1083,7 +1083,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_44
+      name: 01_rock_autotile_8x6_128_flower_44
       rect:
         serializedVersion: 2
         x: 512
@@ -1105,7 +1105,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_45
+      name: 01_rock_autotile_8x6_128_flower_45
       rect:
         serializedVersion: 2
         x: 640
@@ -1127,7 +1127,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rock_autotile_8x6_128_flower_v2_46
+      name: 01_rock_autotile_8x6_128_flower_46
       rect:
         serializedVersion: 2
         x: 768
@@ -1164,53 +1164,53 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":128.0,"y":128.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      rock_autotile_8x6_128_flower_v2_0: -2866789200770935144
-      rock_autotile_8x6_128_flower_v2_1: -1353036448
-      rock_autotile_8x6_128_flower_v2_10: -310405867
-      rock_autotile_8x6_128_flower_v2_11: -648767167
-      rock_autotile_8x6_128_flower_v2_12: -1093087276
-      rock_autotile_8x6_128_flower_v2_13: 1154982956
-      rock_autotile_8x6_128_flower_v2_14: 235215370
-      rock_autotile_8x6_128_flower_v2_15: 1927433795
-      rock_autotile_8x6_128_flower_v2_16: -790447498
-      rock_autotile_8x6_128_flower_v2_17: 336973489
-      rock_autotile_8x6_128_flower_v2_18: -1643674033
-      rock_autotile_8x6_128_flower_v2_19: -1931764399
-      rock_autotile_8x6_128_flower_v2_2: 164182092
-      rock_autotile_8x6_128_flower_v2_20: 1545690368
-      rock_autotile_8x6_128_flower_v2_21: 2108395067
-      rock_autotile_8x6_128_flower_v2_22: 2026624711
-      rock_autotile_8x6_128_flower_v2_23: -81158906
-      rock_autotile_8x6_128_flower_v2_24: 1761162442
-      rock_autotile_8x6_128_flower_v2_25: 1008501486
-      rock_autotile_8x6_128_flower_v2_26: 534691978
-      rock_autotile_8x6_128_flower_v2_27: 34010764
-      rock_autotile_8x6_128_flower_v2_28: 2071877125
-      rock_autotile_8x6_128_flower_v2_29: 1439841227
-      rock_autotile_8x6_128_flower_v2_3: 1838508383
-      rock_autotile_8x6_128_flower_v2_30: 1508196410
-      rock_autotile_8x6_128_flower_v2_31: -710701353
-      rock_autotile_8x6_128_flower_v2_32: 975862206
-      rock_autotile_8x6_128_flower_v2_33: 383342051
-      rock_autotile_8x6_128_flower_v2_34: -1169241124
-      rock_autotile_8x6_128_flower_v2_35: -253825143
-      rock_autotile_8x6_128_flower_v2_36: 1459916781
-      rock_autotile_8x6_128_flower_v2_37: -1985170534
-      rock_autotile_8x6_128_flower_v2_38: -807000145
-      rock_autotile_8x6_128_flower_v2_39: 201411084
-      rock_autotile_8x6_128_flower_v2_4: 1368626817
-      rock_autotile_8x6_128_flower_v2_40: 1789657598
-      rock_autotile_8x6_128_flower_v2_41: -1377592222
-      rock_autotile_8x6_128_flower_v2_42: 1485698891
-      rock_autotile_8x6_128_flower_v2_43: -1856502991
-      rock_autotile_8x6_128_flower_v2_44: 1099962389
-      rock_autotile_8x6_128_flower_v2_45: 430679552
-      rock_autotile_8x6_128_flower_v2_46: 1834447645
-      rock_autotile_8x6_128_flower_v2_5: 2041681277
-      rock_autotile_8x6_128_flower_v2_6: -389426535
-      rock_autotile_8x6_128_flower_v2_7: 957991733
-      rock_autotile_8x6_128_flower_v2_8: -692202380
-      rock_autotile_8x6_128_flower_v2_9: 1997347492
+      01_rock_autotile_8x6_128_flower_0: -2866789200770935144
+      01_rock_autotile_8x6_128_flower_1: -1353036448
+      01_rock_autotile_8x6_128_flower_10: -310405867
+      01_rock_autotile_8x6_128_flower_11: -648767167
+      01_rock_autotile_8x6_128_flower_12: -1093087276
+      01_rock_autotile_8x6_128_flower_13: 1154982956
+      01_rock_autotile_8x6_128_flower_14: 235215370
+      01_rock_autotile_8x6_128_flower_15: 1927433795
+      01_rock_autotile_8x6_128_flower_16: -790447498
+      01_rock_autotile_8x6_128_flower_17: 336973489
+      01_rock_autotile_8x6_128_flower_18: -1643674033
+      01_rock_autotile_8x6_128_flower_19: -1931764399
+      01_rock_autotile_8x6_128_flower_2: 164182092
+      01_rock_autotile_8x6_128_flower_20: 1545690368
+      01_rock_autotile_8x6_128_flower_21: 2108395067
+      01_rock_autotile_8x6_128_flower_22: 2026624711
+      01_rock_autotile_8x6_128_flower_23: -81158906
+      01_rock_autotile_8x6_128_flower_24: 1761162442
+      01_rock_autotile_8x6_128_flower_25: 1008501486
+      01_rock_autotile_8x6_128_flower_26: 534691978
+      01_rock_autotile_8x6_128_flower_27: 34010764
+      01_rock_autotile_8x6_128_flower_28: 2071877125
+      01_rock_autotile_8x6_128_flower_29: 1439841227
+      01_rock_autotile_8x6_128_flower_3: 1838508383
+      01_rock_autotile_8x6_128_flower_30: 1508196410
+      01_rock_autotile_8x6_128_flower_31: -710701353
+      01_rock_autotile_8x6_128_flower_32: 975862206
+      01_rock_autotile_8x6_128_flower_33: 383342051
+      01_rock_autotile_8x6_128_flower_34: -1169241124
+      01_rock_autotile_8x6_128_flower_35: -253825143
+      01_rock_autotile_8x6_128_flower_36: 1459916781
+      01_rock_autotile_8x6_128_flower_37: -1985170534
+      01_rock_autotile_8x6_128_flower_38: -807000145
+      01_rock_autotile_8x6_128_flower_39: 201411084
+      01_rock_autotile_8x6_128_flower_4: 1368626817
+      01_rock_autotile_8x6_128_flower_40: 1789657598
+      01_rock_autotile_8x6_128_flower_41: -1377592222
+      01_rock_autotile_8x6_128_flower_42: 1485698891
+      01_rock_autotile_8x6_128_flower_43: -1856502991
+      01_rock_autotile_8x6_128_flower_44: 1099962389
+      01_rock_autotile_8x6_128_flower_45: 430679552
+      01_rock_autotile_8x6_128_flower_46: 1834447645
+      01_rock_autotile_8x6_128_flower_5: 2041681277
+      01_rock_autotile_8x6_128_flower_6: -389426535
+      01_rock_autotile_8x6_128_flower_7: 957991733
+      01_rock_autotile_8x6_128_flower_8: -692202380
+      01_rock_autotile_8x6_128_flower_9: 1997347492
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
