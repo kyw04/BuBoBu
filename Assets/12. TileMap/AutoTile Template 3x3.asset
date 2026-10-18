@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc2acaac6c5d45c9b52f770dfd9e6bfb, type: 3}
-  m_Name: New AutoTile Template
+  m_Name: AutoTile Template 3x3
   m_EditorClassIdentifier: Unity.2D.Tilemap.Extras.Editor::UnityEngine.Tilemaps.AutoTileTemplate
   width: 1024
   height: 768
