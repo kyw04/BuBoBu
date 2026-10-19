@@ -14,7 +14,7 @@ public class Bullet : NetworkBehaviour, IAttacker
     [Networked] private TickTimer RangeTimer { get; set; } // 시간 = 거리 / 속도
     [Networked] private float Speed { get; set; }
     [Networked] private float Range { get; set; }
-    
+
     public void Initialize(Entity owner, NetworkRunner runner, Vector2 direction)
     {
         if (stats == null)
@@ -45,10 +45,11 @@ public class Bullet : NetworkBehaviour, IAttacker
         transform.position += direction;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerStay2D(Collider2D other)
     {
         if (!Object.IsValid || !HasStateAuthority) return;
         if (!InvincibilityTimer.Expired(Runner)) return;
+        
         if (!other.TryGetComponent(out IDamageable target) || ReferenceEquals(target, Owner))
         {
             if (other.TryGetComponent(out Player.PlayerMovement movement) && transform.position.y < movement.Foot.position.y)
