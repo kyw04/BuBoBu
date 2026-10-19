@@ -521,6 +521,7 @@ MonoBehaviour:
   - {fileID: 6977800326643103964}
   - {fileID: 8634942417492196426}
   - {fileID: 7412525986694740950}
+  - {fileID: 2106476423069986305}
   - {fileID: 5647827426344187008}
   - {fileID: 6291377031919603107}
   - {fileID: 4155500234934983056}
@@ -720,6 +721,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2408537582036118711}
   - component: {fileID: 6250100694266739280}
+  - component: {fileID: 2563872892847444040}
+  - component: {fileID: 2106476423069986305}
   m_Layer: 0
   m_Name: Sprite
   m_TagString: Untagged
@@ -791,7 +794,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1df2665ecef856546a3eb5968733a310, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -802,3 +805,41 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
+--- !u!95 &2563872892847444040
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8901942712545726343}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 49d0e8740a15d1544ad1bf849e3b7722, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2106476423069986305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8901942712545726343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2b6ef47e8094f4cb82d120939e85598, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerAnimator
+  animator: {fileID: 2563872892847444040}
+  _MoveSpeed: 0
+  _JumpCount: 0
+  _IsGrounded: 0

@@ -27,6 +27,7 @@ namespace Player
 
         private Rigidbody2D rb;
         private PlayerInputReader inputReader;
+        private PlayerAnimator animator;
         private IMoveStat stat;
 
         private float jumpingCount = 0;
@@ -40,6 +41,7 @@ namespace Player
             rb.gravityScale = gravity / Physics2D.gravity.y;
 
             inputReader = GetComponent<PlayerInputReader>();
+            animator = GetComponentInChildren<PlayerAnimator>();
             stat = GetComponent<IMoveStat>();
 
             facingTargetBaseX = new float[facingTargets.Length];
@@ -54,16 +56,21 @@ namespace Player
 
             float speedDiff = inputReader.Move.x * stat.MoveSpeed - rb.linearVelocity.x;
             rb.AddForce(Vector2.right * (speedDiff * moveAcceleration), ForceMode2D.Force);
-
-            bool grounded = IsGrounded;
-            if (grounded && rb.linearVelocity.y <= 0.01f)
+            animator.MoveSpeed = Mathf.Abs(rb.linearVelocity.x);
+            
+            bool grounded = IsGrounded && rb.linearVelocity.y <= 0.01f;
+            if (grounded)
                 jumpingCount = 0;
+
             if (inputReader.JumpPressed && jumpingCount < stat.JumpCount)
             {
+                grounded = false;
+                animator.JumpCount++;
                 jumpingCount++;
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
                 rb.AddForce(Vector2.up * stat.JumpPower, ForceMode2D.Impulse);
             }
+            animator.IsGrounded = grounded;
 
             if (rb.linearVelocity.y < -maxFallSpeed)
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, -maxFallSpeed);
