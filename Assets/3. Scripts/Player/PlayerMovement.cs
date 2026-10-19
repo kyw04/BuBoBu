@@ -31,6 +31,7 @@ namespace Player
         private float jumpingCount = 0;
         private float[] facingTargetBaseX;
         
+        public Transform Foot => groundCheck;
         public bool IsGrounded => Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
         public override void Spawned()
@@ -63,10 +64,7 @@ namespace Player
             if (inputReader.JumpPressed && jumpingCount < stat.JumpCount)
             {
                 grounded = false;
-                animator.JumpCount++;
-                jumpingCount++;
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
-                rb.AddForce(Vector2.up * stat.JumpPower, ForceMode2D.Impulse);
+                Jump();
             }
             animator.IsGrounded = grounded;
 
@@ -77,6 +75,14 @@ namespace Player
             if (aimOffsetX != 0f)
                 IsFacingLeft = aimOffsetX < 0f;
             ApplyFacing();
+        }
+
+        public void Jump()
+        {
+            animator.JumpCount++;
+            jumpingCount++;
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+            rb.AddForce(Vector2.up * stat.JumpPower, ForceMode2D.Impulse);
         }
 
         public override void Render()

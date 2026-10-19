@@ -9,6 +9,7 @@ public class Bullet : NetworkBehaviour, IAttacker
     public float Damage { get; private set; }
     
     [Networked] private Vector2 Direction { get; set; }
+    [Networked] private TickTimer InvincibilityTimer { get; set; }
     [Networked] private TickTimer LifeTimer { get; set; }
     [Networked] private TickTimer RangeTimer { get; set; } // 시간 = 거리 / 속도
     [Networked] private float Speed { get; set; }
@@ -24,6 +25,7 @@ public class Bullet : NetworkBehaviour, IAttacker
         Direction = direction;
         Speed = stats.GetStat(BulletStatType.Speed);
         Range = stats.GetStat(BulletStatType.Range);
+        InvincibilityTimer = TickTimer.CreateFromSeconds(runner, 0.1f);
         LifeTimer = TickTimer.CreateFromSeconds(runner, stats.GetStat(BulletStatType.LifTime));
         RangeTimer = TickTimer.CreateFromSeconds(runner, Range / Speed);
     }
@@ -46,7 +48,16 @@ public class Bullet : NetworkBehaviour, IAttacker
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!Object.IsValid || !HasStateAuthority) return;
-        if (!other.TryGetComponent(out IDamageable target) || ReferenceEquals(target, Owner)) return;
+        if (!InvincibilityTimer.Expired(Runner)) return;
+        if (!other.TryGetComponent(out IDamageable target) || ReferenceEquals(target, Owner))
+        {
+            if (other.TryGetComponent(out Player.PlayerMovement movement) && transform.position.y < movement.Foot.position.y)
+            {
+                movement.Jump();
+                Runner.Despawn(Object);
+            }
+            return;
+        }
 
         target.TakeDamage(this);
         Runner.Despawn(Object);
