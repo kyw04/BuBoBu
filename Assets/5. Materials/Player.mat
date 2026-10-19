@@ -29,7 +29,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _NoiseScale: 5
+    - _NoiseScale: 10
     - _Speed: 5
     - _Strength: 0.005
     m_Colors:
