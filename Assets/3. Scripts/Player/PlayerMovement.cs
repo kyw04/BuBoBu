@@ -19,8 +19,6 @@ namespace Player
         [SerializeField] private SpriteRenderer spriteRenderer;
         // maxFallSpeed * Runner.DeltaTime must stay below groundCheckRadius to avoid tunneling through the ground on landing.
         [SerializeField, Min(0f)] private float maxFallSpeed = 8f;
-        // Children mirrored on facing left. Facing can't rotate the root: NetworkRigidbody2D syncs only the Z
-        // angle and overwrites the root rotation every Render, so a Y flip there is erased and never replicated.
         [SerializeField] private Transform[] facingTargets;
 
         [Networked] private NetworkBool IsFacingLeft { get; set; }

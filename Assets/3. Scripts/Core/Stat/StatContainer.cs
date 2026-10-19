@@ -8,8 +8,7 @@ public abstract class StatContainerBase : NetworkBehaviour
     protected const int MaxStats = 16;
 
     [Networked, Capacity(MaxStats)] protected NetworkArray<float> Bonus => default;
-    // 0이면 ×1. 0.2면 ×0.2
-    [Networked, Capacity(MaxStats)] protected NetworkArray<float> MultiplierBonus => default;
+    [Networked, Capacity(MaxStats)] protected NetworkArray<float> MultiplierBonus => default; // 0 = x1. 0.2 = x0.2
 }
 
 public abstract class StatContainer<TStat> : StatContainerBase where TStat : unmanaged, Enum
