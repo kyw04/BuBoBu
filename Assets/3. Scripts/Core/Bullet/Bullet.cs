@@ -14,6 +14,19 @@ public class Bullet : NetworkBehaviour, IAttacker
     [Networked] private TickTimer RangeTimer { get; set; } // 시간 = 거리 / 속도
     [Networked] private float Speed { get; set; }
     [Networked] private float Range { get; set; }
+    
+    [Networked] public NetworkBool IsDead { get; private set; }
+    [Networked] private TickTimer DeathTimer { get; set; }
+    
+    [SerializeField] private Animator animator;
+    [SerializeField] private float deathDuration = 0.3f; // 터지는 애니메이션 길이
+
+    private ChangeDetector changes;
+
+    public override void Spawned()
+    {
+        changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
+    }
 
     public void Initialize(Entity owner, NetworkRunner runner, Vector2 direction)
     {
@@ -29,12 +42,53 @@ public class Bullet : NetworkBehaviour, IAttacker
         LifeTimer = TickTimer.CreateFromSeconds(runner, stats.GetStat(BulletStatType.LifTime));
         RangeTimer = TickTimer.CreateFromSeconds(runner, Range / Speed);
     }
+    
+    public void Die()
+    {
+        if (!HasStateAuthority || IsDead) return;
+        IsDead = true;
+        DeathTimer = TickTimer.CreateFromSeconds(Runner, deathDuration);
+        OnDeathStart();
+    }
+
+    protected virtual void OnDeathStart() { }
+
+    protected virtual void OnDeathEnd()
+    {
+        Runner.Despawn(Object);
+    }
+
+    protected virtual void OnDeathVisual()
+    {
+        if (animator != null)
+            animator.SetTrigger("Pop");
+    }
+
+    public override void Render()
+    {
+        foreach (var change in changes.DetectChanges(this))
+        {
+            switch (change)
+            {
+                case nameof(IsDead) when IsDead:
+                    OnDeathVisual();
+                    break;
+            }
+        }
+    }
 
     public override void FixedUpdateNetwork()
     {
+        if (IsDead)
+        {
+            if (HasStateAuthority && DeathTimer.Expired(Runner))
+                OnDeathEnd();
+            return;
+        }
+
         if (LifeTimer.Expired(Runner))
         {
-            Runner.Despawn(Object);
+            Die();
             return;
         }
 
@@ -47,7 +101,7 @@ public class Bullet : NetworkBehaviour, IAttacker
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (!Object.IsValid || !HasStateAuthority) return;
+        if (!Object.IsValid || !HasStateAuthority || IsDead) return;
         if (!InvincibilityTimer.Expired(Runner)) return;
         
         if (!other.TryGetComponent(out IDamageable target) || ReferenceEquals(target, Owner))
@@ -55,12 +109,12 @@ public class Bullet : NetworkBehaviour, IAttacker
             if (other.TryGetComponent(out Player.PlayerMovement movement) && transform.position.y < movement.Foot.position.y)
             {
                 movement.Jump();
-                Runner.Despawn(Object);
+                Die();
             }
             return;
         }
 
         target.TakeDamage(this);
-        Runner.Despawn(Object);
+        Die();
     }
 }
