@@ -20,6 +20,7 @@ namespace Player
         // maxFallSpeed * Runner.DeltaTime must stay below groundCheckRadius to avoid tunneling through the ground on landing.
         [SerializeField, Min(0f)] private float maxFallSpeed = 8f;
         [SerializeField] private Transform[] facingTargets;
+        [SerializeField, Range(0f, 1f)] private float wallNormalThreshold = 0.7f;
 
         [Networked] private NetworkBool IsFacingLeft { get; set; }
 
@@ -30,7 +31,9 @@ namespace Player
 
         private float jumpingCount = 0;
         private float[] facingTargetBaseX;
-        
+        private readonly ContactPoint2D[] wallContacts = new ContactPoint2D[8];
+        private ContactFilter2D wallContactFilter;
+
         public Transform Foot => groundCheck;
         public bool IsGrounded => Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
@@ -38,6 +41,7 @@ namespace Player
         {
             rb = GetComponent<Rigidbody2D>();
             rb.gravityScale = gravity / Physics2D.gravity.y;
+            wallContactFilter = new ContactFilter2D { useLayerMask = true, layerMask = groundLayer };
 
             inputReader = GetComponent<PlayerInputReader>();
             animator = GetComponentInChildren<PlayerAnimator>();
@@ -53,7 +57,11 @@ namespace Player
         {
             if (!inputReader.HasInput) return;
 
-            float speedDiff = inputReader.Move.x * stat.MoveSpeed - rb.linearVelocity.x;
+            float moveX = inputReader.Move.x;
+            if (IsTouchingWall(moveX))
+                moveX = 0f; // 벽 쪽으로 미는 힘이 마찰로 작용해 벽에 붙지 않도록 입력 무시
+
+            float speedDiff = moveX * stat.MoveSpeed - rb.linearVelocity.x;
             rb.AddForce(Vector2.right * (speedDiff * moveAcceleration), ForceMode2D.Force);
             animator.MoveSpeed = Mathf.Abs(rb.linearVelocity.x);
             
@@ -75,6 +83,21 @@ namespace Player
             if (aimOffsetX != 0f)
                 IsFacingLeft = aimOffsetX < 0f;
             ApplyFacing();
+        }
+
+        private bool IsTouchingWall(float moveX)
+        {
+            if (moveX == 0f) return false;
+
+            int count = rb.GetContacts(wallContactFilter, wallContacts);
+            for (int i = 0; i < count; i++)
+            {
+                Vector2 normal = wallContacts[i].normal;
+                // 노멀이 거의 수평이고 입력 방향과 반대면 그 방향의 벽에 닿아 있는 것
+                if (Mathf.Abs(normal.x) > wallNormalThreshold && normal.x * moveX < 0f)
+                    return true;
+            }
+            return false;
         }
 
         public void Jump()
