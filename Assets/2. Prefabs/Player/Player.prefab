@@ -563,6 +563,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7553f3ae8e74842ba707cc2396466f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Entity
+  _Team: 0
+  _IsDead:
+    _value: 0
 --- !u!114 &4924933357840258966
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -652,7 +655,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AugmentSelector
   database: {fileID: 11400000, guid: 2907192a1ac86ba44a5459e5995785d0, type: 2}
-  offerOnSpawn: 1
+  offerOnSpawn: 0
   _IsChoosing:
     _value: 0
 --- !u!1 &8819395644505532176
