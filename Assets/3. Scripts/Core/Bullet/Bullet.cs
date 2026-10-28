@@ -104,7 +104,8 @@ public class Bullet : NetworkBehaviour, IAttacker
         if (!Object.IsValid || !HasStateAuthority || IsDead) return;
         if (!InvincibilityTimer.Expired(Runner)) return;
         
-        if (!other.TryGetComponent(out IDamageable target) || ReferenceEquals(target, Owner))
+        // 자신과 같은 팀은 피격 대상이 아님 (총알 밟고 점프만 가능)
+        if (!other.TryGetComponent(out IDamageable target) || IsAlly(target))
         {
             if (other.TryGetComponent(out Player.PlayerMovement movement) && transform.position.y < movement.Foot.position.y)
             {
@@ -116,5 +117,11 @@ public class Bullet : NetworkBehaviour, IAttacker
 
         target.TakeDamage(this);
         Die();
+    }
+
+    private bool IsAlly(IDamageable target)
+    {
+        if (ReferenceEquals(target, Owner)) return true;
+        return target is Entity entity && Owner != null && entity.Team == Owner.Team;
     }
 }

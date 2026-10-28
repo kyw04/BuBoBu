@@ -15,7 +15,17 @@ namespace PangPangShotNetwork
         {
             if (!Runner.IsServer) return;
 
-            NetworkObject playerObject = Runner.Spawn(playerPrefab, spawnPosition, Quaternion.identity, player);
+            int team = 0;
+            Vector3 position = spawnPosition;
+            GameManager gameManager = GameManager.Instance;
+            if (gameManager != null)
+            {
+                team = gameManager.GetTeamForNewPlayer();
+                position = gameManager.GetSpawnPosition(team, player.PlayerId);
+            }
+
+            NetworkObject playerObject = Runner.Spawn(playerPrefab, position, Quaternion.identity, player,
+                (_, obj) => obj.GetComponent<Entity>().Team = team);
             spawnedPlayers[player] = playerObject;
         }
 

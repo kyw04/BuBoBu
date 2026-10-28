@@ -11,15 +11,30 @@ namespace Player
     {
         [Networked] private NetworkButtons PreviousButtons { get; set; }
 
+        private Entity entity;
+
         public Vector2 Move { get; private set; }
         public Vector2 AimPoint { get; private set; }
         public bool JumpPressed { get; private set; }
         public bool AttackPressed { get; private set; }
         public bool HasInput { get; private set; }
 
+        public override void Spawned()
+        {
+            entity = GetComponent<Entity>();
+        }
+
         public override void FixedUpdateNetwork()
         {
-            if (!GetInput(out NetworkInputData input))
+            // 사망했거나 라운드 진행 중이 아니면 입력이 없는 것처럼 처리
+            bool hasInput = GetInput(out NetworkInputData input);
+            if (hasInput && entity != null && !entity.CanAct)
+            {
+                PreviousButtons = input.Buttons;
+                hasInput = false;
+            }
+
+            if (!hasInput)
             {
                 HasInput = false;
                 Move = Vector2.zero;

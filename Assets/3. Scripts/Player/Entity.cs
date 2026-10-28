@@ -1,45 +1,121 @@
-﻿using Fusion;
+﻿using System.Collections.Generic;
+using Fusion;
+using Fusion.Addons.Physics;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerStats))]
 public class Entity : NetworkBehaviour, IDamageable
 {
+    // 현재 스폰된 플레이어 목록 (GameManager가 팀/생존 판정에 사용)
+    public static readonly List<Entity> All = new();
+
     public PlayerStats stats { get; private set; }
     public float Damage { get; private set; }
     [Networked] private Gun EquippedGun { get; set; }
-    
+    [Networked] public int Team { get; set; }
+    [Networked] public NetworkBool IsDead { get; private set; }
+
+    private Rigidbody2D rb;
+    private NetworkRigidbody2D networkRb;
+    private Renderer[] renderers;
+    private Canvas[] canvases;
+    private ChangeDetector changes;
+
+    public bool CanAct => !IsDead && (GameManager.Instance == null || GameManager.Instance.CanAct);
+
     public void Awake()
     {
         stats = GetComponent<PlayerStats>();
+        rb = GetComponent<Rigidbody2D>();
+        networkRb = GetComponent<NetworkRigidbody2D>();
+        renderers = GetComponentsInChildren<Renderer>(true);
+        canvases = GetComponentsInChildren<Canvas>(true);
     }
 
     public override void Spawned()
     {
+        All.Add(this);
+        changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
+
         if (HasStateAuthority)
+        {
             ChangeGun(GetComponentInChildren<Gun>());
+            if (GameManager.Instance != null)
+                GameManager.Instance.OnPlayerSpawned(this);
+        }
+
+        ApplyDeadState();
+    }
+
+    public override void Despawned(NetworkRunner runner, bool hasState)
+    {
+        All.Remove(this);
+    }
+
+    public override void Render()
+    {
+        foreach (var change in changes.DetectChanges(this))
+        {
+            if (change == nameof(IsDead))
+                ApplyDeadState();
+        }
     }
 
     public void ChangeGun(Gun newGun)
     {
         EquippedGun = newGun;
         Damage = stats.Damage;
-        
+
         if (EquippedGun == null)
             return;
-        
+
         Damage *= EquippedGun.stats.DamageMultiplier;
     }
-    
+
     public void TakeDamage(IAttacker attacker)
     {
+        if (IsDead) return;
+
         stats.AddBonusStat(PlayerStatType.Health, -Mathf.Max(attacker.Damage - stats.Defense, 0f));
         if (stats.Health <= 0f)
             Die();
     }
 
+    // 라운드 사이에 증강(스탯 보너스)을 유지해야 하므로 Despawn하지 않고 사망 상태로만 전환
     public void Die()
     {
-        Runner.Despawn(Object);
+        if (!HasStateAuthority || IsDead) return;
+
+        IsDead = true;
+        ApplyDeadState();
     }
 
+    // 서버 전용: 체력을 최대치로 채우고 지정 위치에서 부활
+    public void Revive(Vector3 position)
+    {
+        if (!HasStateAuthority) return;
+
+        stats.SetBonusStat(PlayerStatType.Health, stats.MaxHealth - stats.GetDefaultStat(PlayerStatType.Health));
+        Damage = stats.Damage * (EquippedGun != null ? EquippedGun.stats.DamageMultiplier : 1f); // 증강 반영
+
+        rb.linearVelocity = Vector2.zero;
+        if (networkRb != null)
+            networkRb.Teleport(position);
+        else
+            transform.position = position;
+
+        IsDead = false;
+        ApplyDeadState();
+    }
+
+    private void ApplyDeadState()
+    {
+        bool visible = !IsDead;
+        rb.simulated = visible;
+
+        foreach (Renderer r in renderers)
+            r.enabled = visible;
+        foreach (Canvas c in canvases)
+            c.enabled = visible;
+    }
 }

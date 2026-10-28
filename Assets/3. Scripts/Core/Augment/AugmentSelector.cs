@@ -74,8 +74,28 @@ public class AugmentSelector : NetworkBehaviour
         RPC_Select(slot);
     }
 
+    // 서버 전용: 제한 시간 초과 시 남은 선택지 중 하나를 자동 적용
+    public void SelectRandom()
+    {
+        if (!HasStateAuthority || !IsChoosing) return;
+
+        int valid = 0;
+        for (int i = 0; i < ChoiceCount; i++)
+            if (Choices[i] >= 0) valid++;
+
+        if (valid == 0)
+        {
+            IsChoosing = false;
+            return;
+        }
+
+        ApplyChoice(Random.Range(0, valid));
+    }
+
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-    private void RPC_Select(int slot)
+    private void RPC_Select(int slot) => ApplyChoice(slot);
+
+    private void ApplyChoice(int slot)
     {
         if (!IsChoosing) return;
         if (slot < 0 || slot >= ChoiceCount) return;
