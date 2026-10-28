@@ -1,14 +1,10 @@
-﻿using System.Collections.Generic;
-using Fusion;
+﻿using Fusion;
 using Fusion.Addons.Physics;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerStats))]
 public class Entity : NetworkBehaviour, IDamageable
 {
-    // 현재 스폰된 플레이어 목록 (GameManager가 팀/생존 판정에 사용)
-    public static readonly List<Entity> All = new();
-
     public PlayerStats stats { get; private set; }
     public float Damage { get; private set; }
     [Networked] private Gun EquippedGun { get; set; }
@@ -20,8 +16,10 @@ public class Entity : NetworkBehaviour, IDamageable
     private Renderer[] renderers;
     private Canvas[] canvases;
     private ChangeDetector changes;
+    private GameManager game;
 
-    public bool CanAct => !IsDead && (GameManager.Instance == null || GameManager.Instance.CanAct);
+    private GameManager Game => game != null ? game : game = GameManager.Get(Runner);
+    public bool CanAct => !IsDead && (Game == null || Game.CanAct);
 
     public void Awake()
     {
@@ -34,22 +32,16 @@ public class Entity : NetworkBehaviour, IDamageable
 
     public override void Spawned()
     {
-        All.Add(this);
         changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
 
         if (HasStateAuthority)
         {
             ChangeGun(GetComponentInChildren<Gun>());
-            if (GameManager.Instance != null)
-                GameManager.Instance.OnPlayerSpawned(this);
+            if (Game != null)
+                Game.OnPlayerSpawned(this);
         }
 
         ApplyDeadState();
-    }
-
-    public override void Despawned(NetworkRunner runner, bool hasState)
-    {
-        All.Remove(this);
     }
 
     public override void Render()
@@ -75,6 +67,7 @@ public class Entity : NetworkBehaviour, IDamageable
     public void TakeDamage(IAttacker attacker)
     {
         if (IsDead) return;
+        if (Game != null && Game.Phase != GamePhase.Playing) return; // 로비 등 라운드 밖에서는 무적
 
         stats.AddBonusStat(PlayerStatType.Health, -Mathf.Max(attacker.Damage - stats.Defense, 0f));
         if (stats.Health <= 0f)
@@ -106,6 +99,16 @@ public class Entity : NetworkBehaviour, IDamageable
 
         IsDead = false;
         ApplyDeadState();
+    }
+
+    // 서버 전용: 증강으로 얻은 보너스 스탯 초기화 (새 게임 시작 전)
+    public void ResetStats()
+    {
+        if (!HasStateAuthority) return;
+
+        stats.ResetBonuses();
+        if (EquippedGun != null)
+            EquippedGun.stats.ResetBonuses();
     }
 
     private void ApplyDeadState()

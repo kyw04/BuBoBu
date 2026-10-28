@@ -35,7 +35,8 @@ namespace Player
         private ContactFilter2D wallContactFilter;
 
         public Transform Foot => groundCheck;
-        public bool IsGrounded => Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        // 서버는 방마다 별도 물리 씬을 쓰므로(Multi-Peer) 전역 Physics2D 대신 러너의 물리 씬으로 검사
+        public bool IsGrounded => Runner.GetPhysicsScene2D().OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
         public override void Spawned()
         {

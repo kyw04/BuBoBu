@@ -9,6 +9,15 @@ public abstract class StatContainerBase : NetworkBehaviour
 
     [Networked, Capacity(MaxStats)] protected NetworkArray<float> Bonus => default;
     [Networked, Capacity(MaxStats)] protected NetworkArray<float> MultiplierBonus => default; // 0 = x1. 0.2 = x0.2
+
+    public void ResetBonuses()
+    {
+        for (int i = 0; i < MaxStats; i++)
+        {
+            Bonus.Set(i, 0f);
+            MultiplierBonus.Set(i, 0f);
+        }
+    }
 }
 
 public abstract class StatContainer<TStat> : StatContainerBase where TStat : unmanaged, Enum

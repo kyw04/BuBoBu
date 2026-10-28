@@ -4,41 +4,67 @@ using UnityEngine;
 
 public enum GamePhase
 {
-    Waiting,       // 양 팀 인원 대기
+    Lobby,         // 방 대기실: 팀 선택, 방장이 시작할 때까지 대기
     RoundStart,    // 라운드 시작 카운트다운 (행동 불가)
     Playing,
     AugmentSelect, // 진 팀 증강 선택 (행동 불가)
-    GameOver
+    GameOver       // 잠시 후 로비로 복귀
 }
 
 // 씬에 배치되는 NetworkObject. 라운드 흐름은 서버에서만 진행하고 클라이언트는 Networked 값을 읽기만 함
+// 서버는 한 프로세스에서 방(러너)을 여러 개 돌리므로 static 싱글톤 대신 러너별로 조회
 public class GameManager : NetworkBehaviour
 {
     public const int TeamCount = 2;
     public const int WinsToVictory = 3; // 5판 3선승
 
-    public static GameManager Instance { get; private set; }
+    private static readonly Dictionary<NetworkRunner, GameManager> instances = new();
+
+    public static GameManager Get(NetworkRunner runner)
+        => runner != null && instances.TryGetValue(runner, out GameManager game) ? game : null;
 
     [SerializeField] private Transform[] team1SpawnPoints;
     [SerializeField] private Transform[] team2SpawnPoints;
     [SerializeField, Min(1)] private int minPlayersPerTeam = 1;
     [SerializeField] private float roundStartDelay = 3f;
     [SerializeField] private float augmentTimeLimit = 15f; // 시간 초과 시 남은 선택은 랜덤 적용
+    [SerializeField] private float gameOverDuration = 5f;
+    [SerializeField] private float emptyRoomTimeout = 30f; // 아무도 없으면 방(러너) 종료
     [SerializeField] private ScoreboardUI scoreboard;
 
     [Networked] public GamePhase Phase { get; private set; }
     [Networked] public int Round { get; private set; }
     [Networked] public int LastRoundWinner { get; private set; } // 무승부면 -1
     [Networked] public TickTimer PhaseTimer { get; private set; }
+    [Networked] public PlayerRef Host { get; private set; }
     [Networked, Capacity(TeamCount)] private NetworkArray<int> Wins => default;
 
-    public bool CanAct => Phase is GamePhase.Waiting or GamePhase.Playing;
+    private readonly List<Entity> players = new();
+    private float emptyTime;
+    private bool shuttingDown;
+
+    public bool CanAct => Phase is GamePhase.Lobby or GamePhase.Playing;
+    public bool CanStart => Phase == GamePhase.Lobby
+                            && CountPlayers(0) >= minPlayersPerTeam
+                            && CountPlayers(1) >= minPlayersPerTeam;
     public int GetWins(int team) => Wins[team];
     public float RemainingTime => PhaseTimer.RemainingTime(Runner) ?? 0f;
+    public string RoomCode => Runner.SessionInfo.IsValid ? Runner.SessionInfo.Name : string.Empty;
+
+    // 이 러너의 플레이어 목록. 공유 리스트를 재사용하므로 순회 중에 다시 호출하지 말 것
+    public IReadOnlyList<Entity> Players
+    {
+        get
+        {
+            players.Clear();
+            Runner.GetAllBehaviours(players);
+            return players;
+        }
+    }
 
     public override void Spawned()
     {
-        Instance = this;
+        instances[Runner] = this;
 
         if (HasStateAuthority)
             LastRoundWinner = -1;
@@ -46,21 +72,19 @@ public class GameManager : NetworkBehaviour
 
     public override void Despawned(NetworkRunner runner, bool hasState)
     {
-        if (Instance == this)
-            Instance = null;
+        if (Get(runner) == this)
+            instances.Remove(runner);
     }
 
     public override void FixedUpdateNetwork()
     {
         if (!HasStateAuthority) return;
 
+        UpdateHost();
+        if (CheckEmptyRoom()) return;
+
         switch (Phase)
         {
-            case GamePhase.Waiting:
-                if (CountPlayers(0) >= minPlayersPerTeam && CountPlayers(1) >= minPlayersPerTeam)
-                    StartRound();
-                break;
-
             case GamePhase.RoundStart:
                 if (PhaseTimer.Expired(Runner))
                     Phase = GamePhase.Playing;
@@ -73,6 +97,11 @@ public class GameManager : NetworkBehaviour
             case GamePhase.AugmentSelect:
                 if (IsAugmentSelectDone())
                     StartRound();
+                break;
+
+            case GamePhase.GameOver:
+                if (PhaseTimer.Expired(Runner))
+                    ReturnToLobby();
                 break;
         }
     }
@@ -87,11 +116,38 @@ public class GameManager : NetworkBehaviour
         return points[index % points.Length].position;
     }
 
-    // 서버 전용: 대기 중이 아니면 다음 라운드까지 사망 상태로 참가
+    // 서버 전용: 로비가 아니면 다음 라운드까지 사망 상태로 참가
     public void OnPlayerSpawned(Entity entity)
     {
-        if (Phase != GamePhase.Waiting)
+        if (Phase != GamePhase.Lobby)
             entity.Die();
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_SelectTeam(int team, RpcInfo info = default)
+    {
+        if (Phase != GamePhase.Lobby) return;
+        if (team < 0 || team >= TeamCount) return;
+
+        Entity entity = FindPlayer(info.Source);
+        if (entity == null || entity.Team == team) return;
+
+        entity.Team = team;
+        entity.Revive(GetSpawnPosition(team, CountPlayers(team) - 1)); // 바뀐 팀 진영으로 이동
+    }
+
+    // 방장만 시작 가능
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_StartGame(RpcInfo info = default)
+    {
+        if (info.Source != Host || !CanStart) return;
+        StartRound();
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void RPC_ShowStatus(string message, float seconds)
+    {
+        if (scoreboard != null) scoreboard.ShowStatus(message, seconds);
     }
 
     private void StartRound()
@@ -99,7 +155,7 @@ public class GameManager : NetworkBehaviour
         Round++;
 
         var teamIndex = new int[TeamCount];
-        foreach (Entity entity in Entity.All)
+        foreach (Entity entity in Players)
             entity.Revive(GetSpawnPosition(entity.Team, teamIndex[entity.Team]++));
 
         Phase = GamePhase.RoundStart;
@@ -132,11 +188,12 @@ public class GameManager : NetworkBehaviour
         if (Wins[winner] >= WinsToVictory)
         {
             Phase = GamePhase.GameOver;
+            PhaseTimer = TickTimer.CreateFromSeconds(Runner, gameOverDuration);
             return;
         }
 
         int loser = 1 - winner;
-        foreach (Entity entity in Entity.All)
+        foreach (Entity entity in Players)
         {
             if (entity.Team == loser && entity.TryGetComponent(out AugmentSelector selector))
                 selector.OfferAugments();
@@ -145,11 +202,23 @@ public class GameManager : NetworkBehaviour
         Phase = GamePhase.AugmentSelect;
         PhaseTimer = TickTimer.CreateFromSeconds(Runner, augmentTimeLimit);
     }
-    
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    public void RPC_ShowStatus(string message, float seconds)
+
+    // 게임 종료 후 같은 방에서 다시 할 수 있도록 승수/증강을 초기화하고 로비로
+    private void ReturnToLobby()
     {
-        if (scoreboard != null) scoreboard.ShowStatus(message, seconds);
+        for (int i = 0; i < TeamCount; i++)
+            Wins.Set(i, 0);
+        Round = 0;
+        LastRoundWinner = -1;
+
+        var teamIndex = new int[TeamCount];
+        foreach (Entity entity in Players)
+        {
+            entity.ResetStats();
+            entity.Revive(GetSpawnPosition(entity.Team, teamIndex[entity.Team]++));
+        }
+
+        Phase = GamePhase.Lobby;
     }
 
     private bool IsAugmentSelectDone()
@@ -157,9 +226,9 @@ public class GameManager : NetworkBehaviour
         bool timeout = PhaseTimer.Expired(Runner);
         bool done = true;
 
-        foreach (AugmentSelector selector in GetSelectors())
+        foreach (Entity entity in Players)
         {
-            if (!selector.IsChoosing) continue;
+            if (!entity.TryGetComponent(out AugmentSelector selector) || !selector.IsChoosing) continue;
 
             if (timeout)
                 selector.SelectRandom();
@@ -170,19 +239,51 @@ public class GameManager : NetworkBehaviour
         return done || timeout;
     }
 
-    private IEnumerable<AugmentSelector> GetSelectors()
+    // 방장이 나가면 가장 먼저 들어온(PlayerId가 가장 작은) 플레이어에게 넘김
+    private void UpdateHost()
     {
-        foreach (Entity entity in Entity.All)
+        if (Host != PlayerRef.None && Runner.IsPlayerValid(Host)) return;
+
+        PlayerRef next = PlayerRef.None;
+        foreach (PlayerRef player in Runner.ActivePlayers)
         {
-            if (entity.TryGetComponent(out AugmentSelector selector))
-                yield return selector;
+            if (next == PlayerRef.None || player.PlayerId < next.PlayerId)
+                next = player;
         }
+        Host = next;
     }
 
-    private static int CountPlayers(int team, bool aliveOnly = false)
+    private bool CheckEmptyRoom()
+    {
+        if (Host != PlayerRef.None)
+        {
+            emptyTime = 0f;
+            return false;
+        }
+
+        emptyTime += Runner.DeltaTime;
+        if (emptyTime < emptyRoomTimeout || shuttingDown) return shuttingDown;
+
+        shuttingDown = true;
+        Debug.Log($"[Server] room {RoomCode} closed (empty)");
+        Runner.Shutdown();
+        return true;
+    }
+
+    private Entity FindPlayer(PlayerRef player)
+    {
+        foreach (Entity entity in Players)
+        {
+            if (entity.Object.InputAuthority == player)
+                return entity;
+        }
+        return null;
+    }
+
+    private int CountPlayers(int team, bool aliveOnly = false)
     {
         int count = 0;
-        foreach (Entity entity in Entity.All)
+        foreach (Entity entity in Players)
         {
             if (entity.Team != team) continue;
             if (aliveOnly && entity.IsDead) continue;

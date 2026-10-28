@@ -15,14 +15,12 @@ namespace PangPangShotNetwork
         {
             if (!Runner.IsServer) return;
 
-            int team = 0;
-            Vector3 position = spawnPosition;
-            GameManager gameManager = GameManager.Instance;
-            if (gameManager != null)
-            {
-                team = gameManager.GetTeamForNewPlayer();
-                position = gameManager.GetSpawnPosition(team, player.PlayerId);
-            }
+            // 로비 러너처럼 게임 씬이 없는 러너에서는 플레이어를 만들지 않음
+            GameManager gameManager = GameManager.Get(Runner);
+            if (gameManager == null) return;
+
+            int team = gameManager.GetTeamForNewPlayer();
+            Vector3 position = gameManager.GetSpawnPosition(team, player.PlayerId);
 
             NetworkObject playerObject = Runner.Spawn(playerPrefab, position, Quaternion.identity, player,
                 (_, obj) => obj.GetComponent<Entity>().Team = team);
