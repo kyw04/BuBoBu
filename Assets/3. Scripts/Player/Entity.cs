@@ -9,6 +9,7 @@ public class Entity : NetworkBehaviour, IDamageable
     public float Damage { get; private set; }
     [Networked] private Gun EquippedGun { get; set; }
     [Networked] public int Team { get; set; }
+    [Networked] public NetworkString<_16> PlayerName { get; set; } // 서버가 연결 토큰에서 읽어 설정
     [Networked] public NetworkBool IsDead { get; private set; }
 
     private Rigidbody2D rb;

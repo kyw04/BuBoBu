@@ -22,8 +22,18 @@ namespace PangPangShotNetwork
             int team = gameManager.GetTeamForNewPlayer();
             Vector3 position = gameManager.GetSpawnPosition(team, player.PlayerId);
 
+            // 클라이언트가 접속할 때 보낸 이름 (비어 있으면 PlayerNNN)
+            string playerName = PlayerNameRules.FromToken(Runner.GetPlayerConnectionToken(player));
+            if (playerName.Length == 0)
+                playerName = PlayerNameRules.RandomName();
+
             NetworkObject playerObject = Runner.Spawn(playerPrefab, position, Quaternion.identity, player,
-                (_, obj) => obj.GetComponent<Entity>().Team = team);
+                (_, obj) =>
+                {
+                    var entity = obj.GetComponent<Entity>();
+                    entity.Team = team;
+                    entity.PlayerName = playerName;
+                });
             spawnedPlayers[player] = playerObject;
         }
 
