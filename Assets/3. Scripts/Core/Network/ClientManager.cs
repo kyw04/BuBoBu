@@ -16,6 +16,7 @@ namespace PangPangShotNetwork
         [SerializeField] private Button createButton;
         [SerializeField] private Button joinButton;
         [SerializeField] private TMP_InputField codeInput;
+        [SerializeField] private TMP_InputField nameInput; // 비워 두면 PlayerNNN
         [SerializeField] private TMP_Text statusText;
         [SerializeField] private string lobbySession = LobbyProtocol.DefaultLobbySession;
         [SerializeField] private float requestTimeout = 10f;
@@ -31,7 +32,14 @@ namespace PangPangShotNetwork
             codeInput.characterLimit = LobbyProtocol.CodeLength;
             codeInput.onValueChanged.AddListener(OnCodeChanged);
             OnCodeChanged(codeInput.text);
-            SetStatus(string.Empty);
+
+            nameInput.characterLimit = PlayerNameRules.MaxLength;
+            nameInput.text = PlayerNameRules.LoadSaved(); // 지난번에 입력한 이름 유지 (PlayerPrefs라 재실행해도 남음)
+            nameInput.onEndEdit.AddListener(SaveName);    // 방에 안 들어가고 꺼도 저장되도록 입력 끝나면 바로 저장
+
+            // 방에서 나왔거나 방이 닫혀서 돌아온 경우 이유 표시
+            SetStatus(RoomConnection.PendingMessage ?? string.Empty);
+            RoomConnection.PendingMessage = null;
         }
 
         public async void CreateRoom()
@@ -104,6 +112,10 @@ namespace PangPangShotNetwork
 
         private async Task JoinRoom(string code)
         {
+            string typedName = PlayerNameRules.Sanitize(nameInput.text);
+            PlayerNameRules.Save(typedName); // 랜덤 이름은 저장하지 않음
+            string playerName = typedName.Length > 0 ? typedName : PlayerNameRules.RandomName();
+
             runner = Instantiate(runnerPrefab);
             runner.ProvideInput = true;
             runner.AddCallbacks(runner.GetComponent<PlayerInputHandler>());
@@ -112,10 +124,16 @@ namespace PangPangShotNetwork
             {
                 GameMode = GameMode.Client,
                 SessionName = code,
+                ConnectionToken = PlayerNameRules.ToToken(playerName),
                 SceneManager = runner.GetComponent<NetworkSceneManagerDefault>(),
             });
 
-            if (result.Ok) return; // 서버가 게임 씬을 로드하면 이 메뉴는 사라짐
+            if (result.Ok)
+            {
+                // 접속 성공 후부터 끊기면 메뉴로 복귀 (실패 시엔 이 메뉴에 그대로 남음)
+                runner.AddCallbacks(new RoomConnection());
+                return; // 서버가 게임 씬을 로드하면 이 메뉴는 사라짐
+            }
 
             Debug.LogError($"접속 실패: {result.ShutdownReason}");
             if (runner != null)
@@ -127,6 +145,8 @@ namespace PangPangShotNetwork
                 ? $"Room {code} not found."
                 : $"Failed to join ({result.ShutdownReason}).");
         }
+
+        private static void SaveName(string value) => PlayerNameRules.Save(PlayerNameRules.Sanitize(value));
 
         private void OnCodeChanged(string value)
         {
@@ -140,6 +160,7 @@ namespace PangPangShotNetwork
             createButton.interactable = !busy;
             joinButton.interactable = !busy;
             codeInput.interactable = !busy;
+            nameInput.interactable = !busy;
             SetStatus(message);
         }
 

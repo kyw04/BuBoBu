@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Fusion;
+using PangPangShotNetwork;
 using UnityEngine;
 
 public enum GamePhase
@@ -25,11 +26,12 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] private Transform[] team1SpawnPoints;
     [SerializeField] private Transform[] team2SpawnPoints;
-    [SerializeField, Min(1)] private int minPlayersPerTeam = 1;
+    [SerializeField, Min(1)] private int minPlayersPerTeam = 1; // 각 팀 최소 인원이 차야 시작 가능
     [SerializeField] private float roundStartDelay = 3f;
     [SerializeField] private float augmentTimeLimit = 15f; // 시간 초과 시 남은 선택은 랜덤 적용
     [SerializeField] private float gameOverDuration = 5f;
-    [SerializeField] private float emptyRoomTimeout = 30f; // 아무도 없으면 방(러너) 종료
+    [SerializeField] private float emptyRoomTimeout = 30f; // 방을 만든 사람이 안 들어오면 방(러너) 종료
+    [SerializeField] private float closeDelay = 1f;         // 방 닫힘 알림(RPC)이 클라이언트에 도착할 여유
     [SerializeField] private ScoreboardUI scoreboard;
 
     [Networked] public GamePhase Phase { get; private set; }
@@ -40,10 +42,14 @@ public class GameManager : NetworkBehaviour
     [Networked, Capacity(TeamCount)] private NetworkArray<int> Wins => default;
 
     private readonly List<Entity> players = new();
+    private readonly List<Bullet> bullets = new();
     private float emptyTime;
+    private bool closing;
+    private TickTimer closeTimer;
     private bool shuttingDown;
 
     public bool CanAct => Phase is GamePhase.Lobby or GamePhase.Playing;
+    public int MinPlayersPerTeam => minPlayersPerTeam;
     public bool CanStart => Phase == GamePhase.Lobby
                             && CountPlayers(0) >= minPlayersPerTeam
                             && CountPlayers(1) >= minPlayersPerTeam;
@@ -80,8 +86,13 @@ public class GameManager : NetworkBehaviour
     {
         if (!HasStateAuthority) return;
 
-        UpdateHost();
-        if (CheckEmptyRoom()) return;
+        if (shuttingDown) return;
+        if (closing)
+        {
+            UpdateClosing();
+            return;
+        }
+        if (CheckHostLeft() || CheckEmptyRoom()) return;
 
         switch (Phase)
         {
@@ -153,6 +164,7 @@ public class GameManager : NetworkBehaviour
     private void StartRound()
     {
         Round++;
+        ClearBullets();
 
         var teamIndex = new int[TeamCount];
         foreach (Entity entity in Players)
@@ -221,6 +233,19 @@ public class GameManager : NetworkBehaviour
         Phase = GamePhase.Lobby;
     }
 
+    // 서버 전용: 로비/이전 라운드에서 남은 총알 제거
+    private void ClearBullets()
+    {
+        bullets.Clear();
+        Runner.GetAllBehaviours(bullets);
+        foreach (Bullet bullet in bullets)
+        {
+            if (bullet.Object != null && bullet.Object.IsValid)
+                Runner.Despawn(bullet.Object);
+        }
+        bullets.Clear();
+    }
+
     private bool IsAugmentSelectDone()
     {
         bool timeout = PhaseTimer.Expired(Runner);
@@ -239,20 +264,26 @@ public class GameManager : NetworkBehaviour
         return done || timeout;
     }
 
-    // 방장이 나가면 가장 먼저 들어온(PlayerId가 가장 작은) 플레이어에게 넘김
-    private void UpdateHost()
+    // 처음 들어온 플레이어가 방장. 방장이 나가면 방을 닫고 모두 내보냄
+    private bool CheckHostLeft()
     {
-        if (Host != PlayerRef.None && Runner.IsPlayerValid(Host)) return;
-
-        PlayerRef next = PlayerRef.None;
-        foreach (PlayerRef player in Runner.ActivePlayers)
+        if (Host == PlayerRef.None)
         {
-            if (next == PlayerRef.None || player.PlayerId < next.PlayerId)
-                next = player;
+            foreach (PlayerRef player in Runner.ActivePlayers)
+            {
+                if (Host == PlayerRef.None || player.PlayerId < Host.PlayerId)
+                    Host = player;
+            }
+            return false;
         }
-        Host = next;
+
+        if (Runner.IsPlayerValid(Host)) return false;
+
+        CloseRoom("The host left the room.");
+        return true;
     }
 
+    // 방을 만든 사람이 들어오지 않은 채로 시간이 지나면 종료
     private bool CheckEmptyRoom()
     {
         if (Host != PlayerRef.None)
@@ -262,12 +293,61 @@ public class GameManager : NetworkBehaviour
         }
 
         emptyTime += Runner.DeltaTime;
-        if (emptyTime < emptyRoomTimeout || shuttingDown) return shuttingDown;
+        if (emptyTime < emptyRoomTimeout) return false;
+
+        Debug.Log($"[Server] room {RoomCode} closed (empty)");
+        ShutdownRoom();
+        return true;
+    }
+
+    // 서버 전용: 클라이언트에 알리고 잠시 뒤 러너 종료 (그 사이 새 입장은 막음)
+    private void CloseRoom(string message)
+    {
+        if (closing) return;
+
+        closing = true;
+        Runner.SessionInfo.IsOpen = false;
+        closeTimer = TickTimer.CreateFromSeconds(Runner, closeDelay);
+        RPC_RoomClosed(message);
+        Debug.Log($"[Server] room {RoomCode} closing: {message}");
+    }
+
+    private void UpdateClosing()
+    {
+        bool anyPlayer = false;
+        foreach (PlayerRef _ in Runner.ActivePlayers)
+        {
+            anyPlayer = true;
+            break;
+        }
+
+        if (!anyPlayer || closeTimer.ExpiredOrNotRunning(Runner))
+            ShutdownRoom();
+    }
+
+    private void ShutdownRoom()
+    {
+        if (shuttingDown) return;
 
         shuttingDown = true;
-        Debug.Log($"[Server] room {RoomCode} closed (empty)");
         Runner.Shutdown();
-        return true;
+    }
+
+    // 클라이언트: 방이 닫혔으니 스스로 나가서 메뉴로 (RoomConnection이 메뉴 씬 로드)
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_RoomClosed(string message)
+    {
+        if (Runner.IsServer) return;
+
+        RoomConnection.PendingMessage = message;
+        Runner.Shutdown();
+    }
+
+    // 클라이언트: 방 나가기 버튼
+    public void Leave()
+    {
+        if (Runner.IsServer) return;
+        Runner.Shutdown();
     }
 
     private Entity FindPlayer(PlayerRef player)
