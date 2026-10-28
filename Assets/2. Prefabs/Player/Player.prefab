@@ -408,6 +408,7 @@ GameObject:
   - component: {fileID: 6977800326643103964}
   - component: {fileID: 8634942417492196426}
   - component: {fileID: 7412525986694740950}
+  - component: {fileID: 2454968856550649639}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -521,6 +522,7 @@ MonoBehaviour:
   - {fileID: 6977800326643103964}
   - {fileID: 8634942417492196426}
   - {fileID: 7412525986694740950}
+  - {fileID: 2454968856550649639}
   - {fileID: 2106476423069986305}
   - {fileID: 5647827426344187008}
   - {fileID: 6291377031919603107}
@@ -637,6 +639,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerFire
   gun: {fileID: 5647827426344187008}
+--- !u!114 &2454968856550649639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8145728996827313797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 234e8e892c912524ea7e70e141f25070, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AugmentSelector
+  database: {fileID: 11400000, guid: 2907192a1ac86ba44a5459e5995785d0, type: 2}
+  offerOnSpawn: 1
+  _IsChoosing:
+    _value: 0
 --- !u!1 &8819395644505532176
 GameObject:
   m_ObjectHideFlags: 0
