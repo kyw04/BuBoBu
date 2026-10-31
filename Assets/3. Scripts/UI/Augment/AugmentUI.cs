@@ -5,8 +5,10 @@ public class AugmentUI : MonoBehaviour
 {
     [SerializeField] private GameObject panel;
     [SerializeField] private AugmentButton[] buttons;
+    [SerializeField] private float inputBlockDuration = 1f; // 패널이 뜬 직후 오클릭 방지
 
     private AugmentSelector selector;
+    private float shownTime;
 
     private void Awake()
     {
@@ -31,6 +33,10 @@ public class AugmentUI : MonoBehaviour
             buttons[i].SetData(data);
         }
 
+        // 이미 열려 있는 상태에서 갱신될 때는 차단 시간을 다시 시작하지 않음
+        if (!panel.activeSelf)
+            shownTime = Time.unscaledTime;
+
         panel.SetActive(true);
     }
 
@@ -43,6 +49,7 @@ public class AugmentUI : MonoBehaviour
     private void OnClickSlot(int slot)
     {
         if (selector == null) return;
+        if (Time.unscaledTime - shownTime < inputBlockDuration) return;
 
         AugmentSelector target = selector;
         Hide(); // 서버 응답 전에 바로 닫아 중복 클릭 방지
