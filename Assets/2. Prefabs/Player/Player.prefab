@@ -392,6 +392,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerHealthBar
   healthBar: {fileID: 1029042995472774122}
   nameText: {fileID: 4525612172554115704}
+  team1Color: {r: 0.3, g: 0.6, b: 1, a: 1}
+  team2Color: {r: 1, g: 0.35, b: 0.35, a: 1}
 --- !u!1 &8145728996827313797
 GameObject:
   m_ObjectHideFlags: 0
