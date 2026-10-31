@@ -126,6 +126,7 @@ namespace PangPangShotNetwork
                 SessionName = code,
                 ConnectionToken = PlayerNameRules.ToToken(playerName),
                 SceneManager = runner.GetComponent<NetworkSceneManagerDefault>(),
+                ObjectProvider = runner.GetComponent<NetworkObjectPool>(), // 없으면 Fusion 기본 동작
             });
 
             if (result.Ok)

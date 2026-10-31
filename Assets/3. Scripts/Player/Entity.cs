@@ -11,6 +11,9 @@ public class Entity : NetworkBehaviour, IDamageable
     [Networked] public int Team { get; set; }
     [Networked] public NetworkString<_16> PlayerName { get; set; } // 서버가 연결 토큰에서 읽어 설정
     [Networked] public NetworkBool IsDead { get; private set; }
+    [Networked] private int HitCount { get; set; } // 피격 연출 동기화용
+
+    [SerializeField] private EffectData hitEffect; // 플레이어 피격
 
     private Rigidbody2D rb;
     private NetworkRigidbody2D networkRb;
@@ -51,6 +54,8 @@ public class Entity : NetworkBehaviour, IDamageable
         {
             if (change == nameof(IsDead))
                 ApplyDeadState();
+            else if (change == nameof(HitCount))
+                hitEffect.Play(transform.position);
         }
     }
 
@@ -71,6 +76,7 @@ public class Entity : NetworkBehaviour, IDamageable
         if (Game != null && Game.Phase != GamePhase.Playing) return; // 로비 등 라운드 밖에서는 무적
 
         stats.AddBonusStat(PlayerStatType.Health, -Mathf.Max(attacker.Damage - stats.Defense, 0f));
+        HitCount++;
         if (stats.Health <= 0f)
             Die();
     }

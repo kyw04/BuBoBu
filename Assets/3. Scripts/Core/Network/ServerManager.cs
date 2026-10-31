@@ -103,7 +103,8 @@ namespace PangPangShotNetwork
                 Address = NetAddress.Any(),
                 IsVisible = false, // 코드로만 입장
                 Scene = SceneRef.FromIndex(GameSceneIndex),
-                SceneManager = runner.GetComponent<NetworkSceneManagerDefault>()
+                SceneManager = runner.GetComponent<NetworkSceneManagerDefault>(),
+                ObjectProvider = runner.GetComponent<NetworkObjectPool>() // 없으면 Fusion 기본 동작
             });
 
             if (result.Ok)

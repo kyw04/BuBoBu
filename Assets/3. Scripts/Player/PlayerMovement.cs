@@ -22,6 +22,12 @@ namespace Player
         [SerializeField] private Transform[] facingTargets;
         [SerializeField, Range(0f, 1f)] private float wallNormalThreshold = 0.7f;
 
+        [Header("Effects")]
+        [SerializeField] private EffectData jumpEffect;
+        [SerializeField] private EffectData moveEffect; // 땅에서 이동 중 일정 간격으로 재생 (발소리·먼지)
+        [SerializeField, Min(0.05f)] private float moveEffectInterval = 0.3f;
+        [SerializeField, Min(0f)] private float moveEffectMinSpeed = 0.5f;
+
         [Networked] private NetworkBool IsFacingLeft { get; set; }
 
         private Rigidbody2D rb;
@@ -33,6 +39,8 @@ namespace Player
         private float[] facingTargetBaseX;
         private readonly ContactPoint2D[] wallContacts = new ContactPoint2D[8];
         private ContactFilter2D wallContactFilter;
+        private int shownJumpCount;
+        private float moveEffectTimer;
 
         public Transform Foot => groundCheck;
         // 서버는 방마다 별도 물리 씬을 쓰므로(Multi-Peer) 전역 Physics2D 대신 러너의 물리 씬으로 검사
@@ -47,6 +55,7 @@ namespace Player
             inputReader = GetComponent<PlayerInputReader>();
             animator = GetComponentInChildren<PlayerAnimator>();
             stat = GetComponent<IMoveStat>();
+            shownJumpCount = animator.JumpCount; // 입장 시점 이전 점프는 연출하지 않음
 
             facingTargetBaseX = new float[facingTargets.Length];
             for (int i = 0; i < facingTargets.Length; i++)
@@ -112,6 +121,29 @@ namespace Player
         public override void Render()
         {
             ApplyFacing();
+            UpdateEffects();
+        }
+
+        // 점프 횟수/이동 속도는 PlayerAnimator가 동기화하므로 그 값을 보고 모든 클라이언트에서 연출
+        private void UpdateEffects()
+        {
+            if (animator.JumpCount != shownJumpCount)
+            {
+                shownJumpCount = animator.JumpCount;
+                jumpEffect.Play(groundCheck.position);
+            }
+
+            if (!animator.IsGrounded || animator.MoveSpeed < moveEffectMinSpeed)
+            {
+                moveEffectTimer = 0f;
+                return;
+            }
+
+            moveEffectTimer -= Time.deltaTime;
+            if (moveEffectTimer > 0f) return;
+
+            moveEffectTimer = moveEffectInterval;
+            moveEffect.Play(groundCheck.position);
         }
 
         private void ApplyFacing()

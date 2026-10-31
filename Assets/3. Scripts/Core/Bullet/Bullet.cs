@@ -1,7 +1,7 @@
 using Fusion;
 using UnityEngine;
 
-public class Bullet : NetworkBehaviour, IAttacker
+public class Bullet : NetworkBehaviour, IAttacker, IPoolable
 {
     [Networked] private BulletStats stats { get; set; }
 
@@ -20,12 +20,24 @@ public class Bullet : NetworkBehaviour, IAttacker
     
     [SerializeField] private Animator animator;
     [SerializeField] private float deathDuration = 0.3f; // 터지는 애니메이션 길이
+    [SerializeField] private EffectData spawnEffect;
+    [SerializeField] private EffectData deathEffect; // 피격·수명 종료 등으로 터질 때
 
     private ChangeDetector changes;
 
     public override void Spawned()
     {
         changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
+        spawnEffect.Play(transform.position);
+    }
+
+    // 풀로 돌아갈 때 로컬 상태 정리 (네트워크 상태는 다음 Initialize에서 다시 설정됨)
+    public void OnReturnToPool()
+    {
+        Owner = null;
+        Damage = 0f;
+        if (animator != null)
+            animator.Rebind();
     }
 
     public void Initialize(Entity owner, NetworkRunner runner, Vector2 direction)
@@ -62,6 +74,7 @@ public class Bullet : NetworkBehaviour, IAttacker
     {
         if (animator != null)
             animator.SetTrigger("Pop");
+        deathEffect.Play(transform.position);
     }
 
     public override void Render()

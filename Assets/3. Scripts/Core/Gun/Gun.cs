@@ -6,10 +6,14 @@ public class Gun : NetworkBehaviour
     public GunStats stats { get; private set; }
     [SerializeField] private NetworkPrefabRef bulletPrefab;
     [SerializeField] private Transform firePoint;
+    [SerializeField] private EffectData fireEffect; // 플레이어 공격
 
     [Networked] private TickTimer CooldownTimer { get; set; }
     [Networked] private int BulletCount { get; set; }
     [Networked] private Vector2 AimDirection { get; set; }
+    [Networked] private int FireCount { get; set; } // 발사는 서버에서만 일어나므로 클라이언트 연출용으로 동기화
+
+    private ChangeDetector changes;
 
     private Entity owner;
     private float orbitRadius;
@@ -23,6 +27,7 @@ public class Gun : NetworkBehaviour
     {
         owner = GetComponentInParent<Entity>();
         orbitRadius = transform.localPosition.magnitude;
+        changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
         ApplyAim();
     }
 
@@ -38,6 +43,12 @@ public class Gun : NetworkBehaviour
     public override void Render()
     {
         ApplyAim();
+
+        foreach (var change in changes.DetectChanges(this))
+        {
+            if (change == nameof(FireCount))
+                fireEffect.Play(firePoint.position, firePoint.rotation);
+        }
     }
 
     public void Fire()
@@ -45,6 +56,7 @@ public class Gun : NetworkBehaviour
         if (!CooldownTimer.ExpiredOrNotRunning(Runner)) return;
 
         CooldownTimer = TickTimer.CreateFromSeconds(Runner, stats.GetStat(GunStatType.FireSpeed));
+        FireCount++;
 
         Vector2 direction = firePoint.position - transform.position;
         Runner.Spawn(bulletPrefab, firePoint.position, onBeforeSpawned: (runner, obj) =>

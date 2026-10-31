@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4658264476230595005}
   - component: {fileID: -2436520424435581948}
   - component: {fileID: -92628994547309588}
+  - component: {fileID: 1025216157952003507}
   m_Layer: 0
   m_Name: Sever_NetworkRunner
   m_TagString: Untagged
@@ -107,3 +108,17 @@ MonoBehaviour:
   ClientPhysicsSimulation: 0
   DeltaTimeMultiplier: 1
   SetUnityFixedTimestep: 0
+--- !u!114 &1025216157952003507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1411043537503640305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bf52c287063414418f1308b936552cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NetworkObjectPool
+  DelayIfSceneManagerIsBusy: 1
+  maxPooledPerPrefab: 64
