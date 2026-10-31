@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AugmentData
   displayName: "\uAC15\uD0C0"
   description: "\uACF5\uACA9\uB825 +25"
-  icon: {fileID: 0}
+  icon: {fileID: -1370922234, guid: 959ce7f05a48a1e4998e95bb8d148983, type: 3}
   modifiers:
   - target: 0
     playerStat: 2

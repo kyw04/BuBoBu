@@ -1,6 +1,3 @@
-using System.Collections;
-using Fusion;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,14 +10,10 @@ public class ScoreboardUI : MonoBehaviour
     [SerializeField] private Color team1Color = new(0.3f, 0.6f, 1f);
     [SerializeField] private Color team2Color = new(1f, 0.35f, 0.35f);
     [SerializeField] private Color emptyColor = new(1f, 1f, 1f, 0.25f);
-    [SerializeField] private TMP_Text statusText; // 라운드 시작 카운트다운 (선택 사항)
-    [SerializeField] private GameObject messagePanel; // 라운드 시작/증강 선택/게임 종료 때 화면을 덮는 패널
-    [SerializeField] private TMP_Text messageText;
 
     private int shownWins1 = -1;
     private int shownWins2 = -1;
-    private Coroutine statusCoroutine;
-    
+
     private void Update()
     {
         if (game == null || !game.Object || !game.Object.IsValid) return;
@@ -37,51 +30,11 @@ public class ScoreboardUI : MonoBehaviour
             shownWins2 = wins2;
             Fill(team2Circles, wins2, team2Color);
         }
-        
-        string message = GetMessage(game);
-        bool showPanel = message != null;
-        if (messagePanel != null && messagePanel.activeSelf != showPanel)
-            messagePanel.SetActive(showPanel);
-        if (showPanel && messageText != null)
-            messageText.text = message;
     }
 
     private void Fill(Image[] circles, int wins, Color color)
     {
         for (int i = 0; i < circles.Length; i++)
             circles[i].color = i < wins ? color : emptyColor;
-    }
-    
-    public void ShowStatus(string message, float seconds)
-    {
-        if (statusText == null) return;
-
-        statusText.text = message;
-        if (statusCoroutine != null) StopCoroutine(statusCoroutine);
-        statusCoroutine = StartCoroutine(StatusCoroutine(seconds));
-    }
-
-    private IEnumerator StatusCoroutine(float seconds)
-    {
-        yield return new WaitForSeconds(seconds);
-        statusText.text = string.Empty;
-        statusCoroutine = null;
-    }
-
-    // 패널을 띄울 단계면 메시지, 아니면 null
-    private static string GetMessage(GameManager game)
-    {
-        int winner = game.LastRoundWinner + 1;
-        int loser = 3 - winner;
-
-        return game.Phase switch
-        {
-            GamePhase.AugmentSelect =>
-                $"{winner}팀 라운드 승리!\n<size=70%>{loser}팀 증강 선택 중...  {Mathf.CeilToInt(game.RemainingTime)}</size>",
-            GamePhase.RoundStart => $"라운드 {game.Round}  {Mathf.CeilToInt(game.RemainingTime)}",
-            GamePhase.GameOver =>
-                $"{winner}팀 승리!\n<size=70%>{Mathf.CeilToInt(game.RemainingTime)}초 후 대기실로 돌아갑니다</size>",
-            _ => null
-        };
     }
 }

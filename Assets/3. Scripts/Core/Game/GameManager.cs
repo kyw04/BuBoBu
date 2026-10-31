@@ -32,7 +32,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private float gameOverDuration = 5f;
     [SerializeField] private float emptyRoomTimeout = 30f; // 방을 만든 사람이 안 들어오면 방(러너) 종료
     [SerializeField] private float closeDelay = 1f;         // 방 닫힘 알림(RPC)이 클라이언트에 도착할 여유
-    [SerializeField] private ScoreboardUI scoreboard;
+    [SerializeField] private GameMessageUI messageUI;
 
     [Networked] public GamePhase Phase { get; private set; }
     [Networked] public int Round { get; private set; }
@@ -158,7 +158,7 @@ public class GameManager : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     public void RPC_ShowStatus(string message, float seconds)
     {
-        if (scoreboard != null) scoreboard.ShowStatus(message, seconds);
+        if (messageUI != null) messageUI.ShowStatus(message, seconds);
     }
 
     private void StartRound()
