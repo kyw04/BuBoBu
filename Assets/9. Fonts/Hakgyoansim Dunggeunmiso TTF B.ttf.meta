@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 3f460ccf1328cda4cb7f49d81ed6488b
+guid: 253854f2b7f80554a8f595bf0afbb16d
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - BM JUA_TTF
+  - Hakgyoansim Dunggeunmiso TTF
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
