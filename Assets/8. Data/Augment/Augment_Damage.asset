@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56e15c4bf8ae1b64492fb85bb005c2b0, type: 3}
   m_Name: Augment_Damage
   m_EditorClassIdentifier: Assembly-CSharp::AugmentData
-  displayName: "\uAC15\uD0C0"
-  description: "\uACF5\uACA9\uB825 +5"
+  displayName: Damage
+  description: Damage +25
   icon: {fileID: 0}
   modifiers:
   - target: 0
     playerStat: 2
     gunStat: 0
-    value: 5
+    value: 25
