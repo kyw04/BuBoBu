@@ -20,7 +20,7 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] private Button team2Button;
     [SerializeField] private Button startButton;
     [SerializeField] private Button leaveButton;
-    [SerializeField] private TMP_Text leaveButtonLabel; // 방장이면 "CLOSE ROOM"
+    [SerializeField] private TMP_Text leaveButtonLabel; // 방장이면 "방 닫기"
     [SerializeField] private TMP_Text hintText;
 
     private readonly StringBuilder team1Builder = new();
@@ -48,7 +48,7 @@ public class LobbyUI : MonoBehaviour
         if (!show) return;
 
         bool isHost = game.Host == game.Runner.LocalPlayer;
-        SetText(leaveButtonLabel, isHost ? "CLOSE ROOM" : "LEAVE");
+        SetText(leaveButtonLabel, isHost ? "방 닫기" : "나가기");
         bool canStart = game.CanStart; // Players 순회 전에 계산 (공유 리스트 사용)
         int localTeam = -1;
         string hostName = string.Empty;
@@ -63,11 +63,11 @@ public class LobbyUI : MonoBehaviour
             if (entity.Object.InputAuthority == game.Host)
             {
                 hostName = playerName;
-                sb.Append("  <color=#FFD54A>HOST</color>");
+                sb.Append("  <color=#FFD54A>방장</color>");
             }
             if (entity.HasInputAuthority)
             {
-                sb.Append("  <color=#9CFF9C>(YOU)</color>");
+                sb.Append("  <color=#9CFF9C>(나)</color>");
                 localTeam = entity.Team;
             }
             sb.Append('\n');
@@ -79,13 +79,13 @@ public class LobbyUI : MonoBehaviour
         if (isHost)
         {
             string code = showCode ? game.RoomCode : new string('*', game.RoomCode.Length);
-            SetText(roomCodeText, $"ROOM CODE  <b>{code}</b>");
-            SetText(toggleCodeLabel, showCode ? "HIDE" : "SHOW");
-            SetText(copyCodeLabel, Time.unscaledTime < copiedUntil ? "COPIED!" : "COPY");
+            SetText(roomCodeText, $"방 코드  <b>{code}</b>");
+            SetText(toggleCodeLabel, showCode ? "숨기기" : "보기");
+            SetText(copyCodeLabel, Time.unscaledTime < copiedUntil ? "복사됨!" : "복사");
         }
         else
         {
-            SetText(roomCodeText, $"<b>{hostName}</b>'s Room");
+            SetText(roomCodeText, $"<b>{hostName}</b>의 방");
         }
         SetText(team1ListText, team1Builder.ToString());
         SetText(team2ListText, team2Builder.ToString());
@@ -96,9 +96,9 @@ public class LobbyUI : MonoBehaviour
         startButton.gameObject.SetActive(isHost);
         startButton.interactable = canStart;
 
-        SetText(hintText, !isHost ? "Waiting for the host to start..."
-            : canStart ? "Press START when ready"
-            : $"Each team needs at least {game.MinPlayersPerTeam} player");
+        SetText(hintText, !isHost ? "방장이 시작하기를 기다리는 중..."
+            : canStart ? "준비되면 시작을 누르세요"
+            : $"팀마다 최소 {game.MinPlayersPerTeam}명이 필요합니다");
     }
 
     // 방장이 나가면 서버가 방을 닫아 모두 메뉴로 돌아감

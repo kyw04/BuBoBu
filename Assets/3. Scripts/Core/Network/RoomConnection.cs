@@ -18,7 +18,7 @@ namespace PangPangShotNetwork
         public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
         {
             if (PendingMessage == null && shutdownReason != ShutdownReason.Ok)
-                PendingMessage = $"Disconnected ({shutdownReason}).";
+                PendingMessage = $"연결이 끊겼습니다 ({shutdownReason}).";
 
             SceneManager.LoadScene(MenuSceneName);
         }

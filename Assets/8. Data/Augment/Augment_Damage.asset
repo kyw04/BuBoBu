@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56e15c4bf8ae1b64492fb85bb005c2b0, type: 3}
   m_Name: Augment_Damage
   m_EditorClassIdentifier: Assembly-CSharp::AugmentData
-  displayName: Damage
-  description: Damage +25
+  displayName: "\uAC15\uD0C0"
+  description: "\uACF5\uACA9\uB825 +25"
   icon: {fileID: 0}
   modifiers:
   - target: 0

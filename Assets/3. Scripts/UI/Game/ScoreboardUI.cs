@@ -77,10 +77,10 @@ public class ScoreboardUI : MonoBehaviour
         return game.Phase switch
         {
             GamePhase.AugmentSelect =>
-                $"TEAM {winner} wins the round!\n<size=70%>TEAM {loser} is choosing augments...  {Mathf.CeilToInt(game.RemainingTime)}</size>",
-            GamePhase.RoundStart => $"Round {game.Round}  {Mathf.CeilToInt(game.RemainingTime)}",
+                $"{winner}팀 라운드 승리!\n<size=70%>{loser}팀 증강 선택 중...  {Mathf.CeilToInt(game.RemainingTime)}</size>",
+            GamePhase.RoundStart => $"라운드 {game.Round}  {Mathf.CeilToInt(game.RemainingTime)}",
             GamePhase.GameOver =>
-                $"TEAM {winner} VICTORY!\n<size=70%>Back to lobby in {Mathf.CeilToInt(game.RemainingTime)}</size>",
+                $"{winner}팀 승리!\n<size=70%>{Mathf.CeilToInt(game.RemainingTime)}초 후 대기실로 돌아갑니다</size>",
             _ => null
         };
     }

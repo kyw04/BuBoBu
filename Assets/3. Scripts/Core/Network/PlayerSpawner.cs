@@ -22,7 +22,7 @@ namespace PangPangShotNetwork
             int team = gameManager.GetTeamForNewPlayer();
             Vector3 position = gameManager.GetSpawnPosition(team, player.PlayerId);
 
-            // 클라이언트가 접속할 때 보낸 이름 (비어 있으면 PlayerNNN)
+            // 클라이언트가 접속할 때 보낸 이름 (비어 있으면 플레이어NNN)
             string playerName = PlayerNameRules.FromToken(Runner.GetPlayerConnectionToken(player));
             if (playerName.Length == 0)
                 playerName = PlayerNameRules.RandomName();

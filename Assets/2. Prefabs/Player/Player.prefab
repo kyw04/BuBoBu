@@ -191,7 +191,7 @@ SpriteRenderer:
   m_SortingOrder: 11
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: c6f43ddd77073ad4d954ab5624c41ad8, type: 3}
-  m_Color: {r: 0, g: 0.9808086, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -216,6 +216,9 @@ MonoBehaviour:
   bulletPrefab:
     RawGuidValue: 50aa76c010920b04ea640673c4b82cc6l
   firePoint: {fileID: 1589101494678389375}
+  fireEffect:
+    sound: {fileID: 0}
+    particle: {fileID: 0}
 --- !u!114 &6291377031919603107
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -574,6 +577,9 @@ MonoBehaviour:
       Data: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000u
   _IsDead:
     _value: 0
+  hitEffect:
+    sound: {fileID: 0}
+    particle: {fileID: 0}
 --- !u!114 &4924933357840258966
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -625,6 +631,14 @@ MonoBehaviour:
   facingTargets:
   - {fileID: 2408537582036118711}
   wallNormalThreshold: 0.7
+  jumpEffect:
+    sound: {fileID: 0}
+    particle: {fileID: 0}
+  moveEffect:
+    sound: {fileID: 0}
+    particle: {fileID: 0}
+  moveEffectInterval: 0.3
+  moveEffectMinSpeed: 0.5
 --- !u!114 &8634942417492196426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -824,15 +838,15 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 10
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 1df2665ecef856546a3eb5968733a310, type: 3}
+  m_Sprite: {fileID: 1722244117628010422, guid: de512ed824ea24845bdf95f2d654c662, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 2}
+  m_Size: {x: 2, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
 --- !u!95 &2563872892847444040
@@ -940,8 +954,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Player000
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 9c6b3c2a8df013042864c2e6f67408dc, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: fb87330342676e94ab1958d7b35675ed, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

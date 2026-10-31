@@ -279,7 +279,7 @@ public class GameManager : NetworkBehaviour
 
         if (Runner.IsPlayerValid(Host)) return false;
 
-        CloseRoom("The host left the room.");
+        CloseRoom("방장이 방을 나갔습니다.");
         return true;
     }
 

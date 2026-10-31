@@ -16,7 +16,7 @@ namespace PangPangShotNetwork
         [SerializeField] private Button createButton;
         [SerializeField] private Button joinButton;
         [SerializeField] private TMP_InputField codeInput;
-        [SerializeField] private TMP_InputField nameInput; // 비워 두면 PlayerNNN
+        [SerializeField] private TMP_InputField nameInput; // 비워 두면 플레이어NNN
         [SerializeField] private TMP_Text statusText;
         [SerializeField] private string lobbySession = LobbyProtocol.DefaultLobbySession;
         [SerializeField] private float requestTimeout = 10f;
@@ -45,14 +45,14 @@ namespace PangPangShotNetwork
         public async void CreateRoom()
         {
             if (runner != null) return;
-            SetBusy(true, "Creating room...");
+            SetBusy(true, "방을 만드는 중...");
 
             string code = await RequestRoomCode();
             if (this == null) return;
 
             if (string.IsNullOrEmpty(code))
             {
-                SetBusy(false, "Failed to create room.");
+                SetBusy(false, "방을 만들지 못했습니다.");
                 return;
             }
 
@@ -66,11 +66,11 @@ namespace PangPangShotNetwork
             string code = LobbyProtocol.NormalizeCode(codeInput.text);
             if (code.Length != LobbyProtocol.CodeLength)
             {
-                SetStatus($"Enter a {LobbyProtocol.CodeLength}-character code.");
+                SetStatus($"{LobbyProtocol.CodeLength}자리 코드를 입력하세요.");
                 return;
             }
 
-            SetBusy(true, $"Joining {code}...");
+            SetBusy(true, $"{code} 방에 입장하는 중...");
             await JoinRoom(code);
         }
 
@@ -143,8 +143,8 @@ namespace PangPangShotNetwork
 
             if (this == null) return;
             SetBusy(false, result.ShutdownReason == ShutdownReason.GameNotFound
-                ? $"Room {code} not found."
-                : $"Failed to join ({result.ShutdownReason}).");
+                ? $"{code} 방을 찾을 수 없습니다."
+                : $"입장하지 못했습니다 ({result.ShutdownReason}).");
         }
 
         private static void SaveName(string value) => PlayerNameRules.Save(PlayerNameRules.Sanitize(value));

@@ -9,8 +9,8 @@ namespace PangPangShotNetwork
         public const int MaxLength = 12;
         private const string PrefsKey = "PlayerName";
 
-        // 빈 이름이면 Player000 ~ Player999
-        public static string RandomName() => $"Player{Random.Range(0, 1000):D3}";
+        // 빈 이름이면 플레이어000 ~ 플레이어999
+        public static string RandomName() => $"플레이어{Random.Range(0, 1000):D3}";
 
         // 앞뒤 공백 제거, 리치 텍스트 태그 문자(<, >) 제거, 길이 제한
         public static string Sanitize(string name)
