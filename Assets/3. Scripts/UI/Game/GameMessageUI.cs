@@ -50,6 +50,8 @@ public class GameMessageUI : MonoBehaviour
 
         return game.Phase switch
         {
+            GamePhase.AugmentSelect when game.Round == 0 =>
+                $"게임 시작!\n<size=70%>모두 증강 선택 중...  {Mathf.CeilToInt(game.RemainingTime)}</size>",
             GamePhase.AugmentSelect =>
                 $"{winner}팀 라운드 승리!\n<size=70%>{loser}팀 증강 선택 중...  {Mathf.CeilToInt(game.RemainingTime)}</size>",
             GamePhase.RoundStart => $"라운드 {game.Round}  {Mathf.CeilToInt(game.RemainingTime)}",

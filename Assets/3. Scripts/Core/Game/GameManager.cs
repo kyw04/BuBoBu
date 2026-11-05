@@ -18,6 +18,7 @@ public class GameManager : NetworkBehaviour
 {
     public const int TeamCount = 2;
     public const int WinsToVictory = 3; // 5판 3선승
+    public const int AugmentRankCount = 3; // 게임 시작 시 미리 뽑아두는 증강 랭크 수
 
     private static readonly Dictionary<NetworkRunner, GameManager> instances = new();
 
@@ -29,10 +30,12 @@ public class GameManager : NetworkBehaviour
     [SerializeField, Min(1)] private int minPlayersPerTeam = 1; // 각 팀 최소 인원이 차야 시작 가능
     [SerializeField] private float roundStartDelay = 3f;
     [SerializeField] private float augmentTimeLimit = 15f; // 시간 초과 시 남은 선택은 랜덤 적용
+    [SerializeField] private float startAugmentTimeLimit = 15f; // 게임 시작 시 전원 증강 선택 제한 시간
     [SerializeField] private float gameOverDuration = 5f;
     [SerializeField] private float emptyRoomTimeout = 30f; // 방을 만든 사람이 안 들어오면 방(러너) 종료
     [SerializeField] private float closeDelay = 1f;         // 방 닫힘 알림(RPC)이 클라이언트에 도착할 여유
     [SerializeField] private GameMessageUI messageUI;
+    [SerializeField] private AugmentDatabase augmentDatabase; // 증강 랭크 순서를 뽑을 때 사용
 
     [Networked] public GamePhase Phase { get; private set; }
     [Networked] public int Round { get; private set; }
@@ -40,6 +43,7 @@ public class GameManager : NetworkBehaviour
     [Networked] public TickTimer PhaseTimer { get; private set; }
     [Networked] public PlayerRef Host { get; private set; }
     [Networked, Capacity(TeamCount)] private NetworkArray<int> Wins => default;
+    [Networked, Capacity(AugmentRankCount)] private NetworkArray<int> AugmentRanks => default; // AugmentRank 값
 
     private readonly List<Entity> players = new();
     private readonly List<Bullet> bullets = new();
@@ -54,6 +58,10 @@ public class GameManager : NetworkBehaviour
                             && CountPlayers(0) >= minPlayersPerTeam
                             && CountPlayers(1) >= minPlayersPerTeam;
     public int GetWins(int team) => Wins[team];
+
+    // order번째(0부터)로 받는 증강의 랭크. 미리 뽑은 개수를 넘으면 마지막 랭크를 계속 사용
+    public AugmentRank GetAugmentRank(int order)
+        => (AugmentRank)AugmentRanks[Mathf.Clamp(order, 0, AugmentRankCount - 1)];
     public float RemainingTime => PhaseTimer.RemainingTime(Runner) ?? 0f;
     public string RoomCode => Runner.SessionInfo.IsValid ? Runner.SessionInfo.Name : string.Empty;
 
@@ -73,7 +81,10 @@ public class GameManager : NetworkBehaviour
         instances[Runner] = this;
 
         if (HasStateAuthority)
+        {
             LastRoundWinner = -1;
+            RollAugmentRanks(); // 로비 테스트(offerOnSpawn)용. 게임 시작 시 다시 뽑음
+        }
     }
 
     public override void Despawned(NetworkRunner runner, bool hasState)
@@ -152,7 +163,8 @@ public class GameManager : NetworkBehaviour
     public void RPC_StartGame(RpcInfo info = default)
     {
         if (info.Source != Host || !CanStart) return;
-        StartRound();
+        RollAugmentRanks();
+        OfferStartAugments();
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -160,6 +172,36 @@ public class GameManager : NetworkBehaviour
     {
         if (messageUI != null) messageUI.ShowStatus(message, seconds);
     }
+
+    // 서버 전용: 이번 게임에서 증강을 받을 때마다 차례로 사용할 랭크 순서를 뽑음 (모든 플레이어 공통)
+    private void RollAugmentRanks()
+    {
+        if (augmentDatabase == null)
+        {
+            Debug.LogWarning("[GameManager] augmentDatabase가 지정되지 않아 증강 랭크를 뽑지 못했습니다.");
+            return;
+        }
+
+        for (int i = 0; i < AugmentRankCount; i++)
+            AugmentRanks.Set(i, (int)augmentDatabase.RollRank());
+    }
+
+    // 서버 전용: 게임 시작 시 모든 플레이어가 증강을 하나 고르고, 다 고르면(또는 시간 초과) 1라운드 시작
+    private void OfferStartAugments()
+    {
+        bool gunChoice = IsLastAugment(0);
+        foreach (Entity entity in Players)
+        {
+            if (entity.TryGetComponent(out AugmentSelector selector))
+                selector.OfferAugments(gunChoice);
+        }
+
+        Phase = GamePhase.AugmentSelect; // Round == 0이면 시작 증강
+        PhaseTimer = TickTimer.CreateFromSeconds(Runner, startAugmentTimeLimit);
+    }
+
+    // 팀이 losses번 졌을 때 받는 증강이 그 팀의 마지막 증강인지 (한 번 더 지면 게임이 끝남) → 총 증강
+    private static bool IsLastAugment(int losses) => losses >= WinsToVictory - 1;
 
     private void StartRound()
     {
@@ -205,10 +247,11 @@ public class GameManager : NetworkBehaviour
         }
 
         int loser = 1 - winner;
+        bool gunChoice = IsLastAugment(Wins[winner]); // 진 팀의 패배 수 = 이긴 팀의 승리 수
         foreach (Entity entity in Players)
         {
             if (entity.Team == loser && entity.TryGetComponent(out AugmentSelector selector))
-                selector.OfferAugments();
+                selector.OfferAugments(gunChoice);
         }
 
         Phase = GamePhase.AugmentSelect;
@@ -227,6 +270,8 @@ public class GameManager : NetworkBehaviour
         foreach (Entity entity in Players)
         {
             entity.ResetStats();
+            if (entity.TryGetComponent(out AugmentSelector selector))
+                selector.ResetAugments();
             entity.Revive(GetSpawnPosition(entity.Team, teamIndex[entity.Team]++));
         }
 

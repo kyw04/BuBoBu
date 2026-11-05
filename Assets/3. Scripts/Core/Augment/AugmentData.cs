@@ -1,6 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// 값 순서가 네트워크로 전송되는 int 값이므로 중간에 끼워 넣지 말고 뒤에 추가할 것
+public enum AugmentRank
+{
+    Silver,
+    Gold,
+    Platinum
+}
+
 public enum AugmentTarget
 {
     Player,
@@ -22,11 +30,13 @@ public class AugmentData : ScriptableObject
     [SerializeField] private string displayName;
     [SerializeField, TextArea] private string description;
     [SerializeField] private Sprite icon;
+    [SerializeField] private AugmentRank rank;
     [SerializeField] private List<AugmentModifier> modifiers = new();
 
     public string DisplayName => displayName;
     public string Description => description;
     public Sprite Icon => icon;
+    public AugmentRank Rank => rank;
 
     // 서버(StateAuthority)에서만 호출
     public void Apply(PlayerStats playerStats, GunStats gunStats)

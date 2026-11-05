@@ -7092,6 +7092,7 @@ MonoBehaviour:
   emptyRoomTimeout: 30
   closeDelay: 1
   messageUI: {fileID: 421455710}
+  augmentDatabase: {fileID: 11400000, guid: 2907192a1ac86ba44a5459e5995785d0, type: 2}
   _Phase: 0
   _Round: 0
   _LastRoundWinner: 0

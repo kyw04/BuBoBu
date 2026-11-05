@@ -12,20 +12,26 @@ public class AugmentSelector : NetworkBehaviour
 
     [Networked, Capacity(ChoiceCount)] private NetworkArray<int> Choices => default;
     [Networked] public NetworkBool IsChoosing { get; private set; }
+    [Networked] public AugmentRank CurrentRank { get; private set; } // 지금 고르는 선택지의 랭크
+    [Networked] public NetworkBool IsGunChoice { get; private set; } // true면 선택지가 증강이 아니라 총 (GunDatabase 인덱스)
+    [Networked] public int AugmentCount { get; private set; }        // 이번 게임에서 받은 증강 수 = 다음 랭크 순번
 
     private PlayerStats playerStats;
     private GunStats gunStats;
+    private Gun gun;
     private AugmentUI ui;
     private ChangeDetector changes;
     private readonly int[] pickBuffer = new int[ChoiceCount];
 
     public AugmentDatabase Database => database;
+    public GunDatabase GunDatabase => gun != null ? gun.Database : null;
     public int GetChoice(int slot) => Choices[slot];
 
     public override void Spawned()
     {
         playerStats = GetComponent<PlayerStats>();
         gunStats = GetComponentInChildren<GunStats>();
+        gun = GetComponentInChildren<Gun>();
 
         if (HasStateAuthority && offerOnSpawn)
             OfferAugments();
@@ -55,16 +61,43 @@ public class AugmentSelector : NetworkBehaviour
         }
     }
 
-    // 서버 전용: 랜덤 선택지를 뽑아 선택 상태로 전환
-    public void OfferAugments()
+    // 서버 전용: 선택지를 뽑아 선택 상태로 전환
+    // 일반 증강은 미리 뽑아둔 랭크 순서에서 이번 차례 랭크를 보고 그 랭크 증강 중에서 뽑음
+    // gunChoice면 증강 대신 총 중에서 뽑음 (총 목록이 비어 있으면 일반 증강)
+    public void OfferAugments(bool gunChoice = false)
     {
         if (!HasStateAuthority) return;
 
-        database.PickRandom(pickBuffer);
+        GunDatabase guns = GunDatabase;
+        IsGunChoice = gunChoice && guns != null && guns.Count > 0;
+
+        if (IsGunChoice)
+        {
+            guns.PickRandom(pickBuffer);
+        }
+        else
+        {
+            GameManager game = GameManager.Get(Runner);
+            CurrentRank = game != null ? game.GetAugmentRank(AugmentCount) : database.RollRank();
+            database.PickRandom(CurrentRank, pickBuffer);
+        }
+
         for (int i = 0; i < ChoiceCount; i++)
             Choices.Set(i, pickBuffer[i]);
 
         IsChoosing = true;
+    }
+
+    // 서버 전용: 게임이 끝나 로비로 돌아갈 때 증강 순번 초기화
+    public void ResetAugments()
+    {
+        if (!HasStateAuthority) return;
+
+        AugmentCount = 0;
+        IsChoosing = false;
+        IsGunChoice = false;
+        if (gun != null)
+            gun.ResetGun();
     }
 
     // 클라이언트(로컬 플레이어)가 UI에서 호출
@@ -100,10 +133,21 @@ public class AugmentSelector : NetworkBehaviour
         if (!IsChoosing) return;
         if (slot < 0 || slot >= ChoiceCount) return;
 
-        AugmentData augment = database.Get(Choices[slot]);
-        if (augment == null) return;
+        if (Choices[slot] < 0) return;
 
-        augment.Apply(playerStats, gunStats);
+        if (IsGunChoice)
+        {
+            gun.SetGun(Choices[slot]);
+        }
+        else
+        {
+            AugmentData augment = database.Get(Choices[slot]);
+            if (augment == null) return;
+
+            augment.Apply(playerStats, gunStats);
+        }
+
+        AugmentCount++;
         IsChoosing = false;
     }
 

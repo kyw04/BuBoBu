@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 // 씬의 Augment Canvas에 붙음. 로컬 플레이어의 AugmentSelector가 찾아서 Show/Hide 호출
@@ -5,6 +6,9 @@ public class AugmentUI : MonoBehaviour
 {
     [SerializeField] private GameObject panel;
     [SerializeField] private AugmentButton[] buttons;
+    [SerializeField] private TMP_Text rankText; // 선택 사항: "골드 증강" 같은 랭크 표시
+    [SerializeField] private string gunTitle = "총 선택";
+    [SerializeField] private Color gunColor = new(1f, 0.45f, 0.35f);
     [SerializeField] private float inputBlockDuration = 1f; // 패널이 뜬 직후 오클릭 방지
 
     private AugmentSelector selector;
@@ -25,19 +29,51 @@ public class AugmentUI : MonoBehaviour
     {
         selector = target;
 
-        for (int i = 0; i < buttons.Length; i++)
-        {
-            AugmentData data = i < AugmentSelector.ChoiceCount
-                ? selector.Database.Get(selector.GetChoice(i))
-                : null;
-            buttons[i].SetData(data);
-        }
+        if (selector.IsGunChoice)
+            ShowGuns();
+        else
+            ShowAugments();
 
         // 이미 열려 있는 상태에서 갱신될 때는 차단 시간을 다시 시작하지 않음
         if (!panel.activeSelf)
             shownTime = Time.unscaledTime;
 
         panel.SetActive(true);
+    }
+
+    private void ShowAugments()
+    {
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            AugmentData data = i < AugmentSelector.ChoiceCount
+                ? selector.Database.Get(selector.GetChoice(i))
+                : null;
+            buttons[i].SetData(data, selector.Database);
+        }
+
+        if (rankText != null && selector.Database.TryGetRankSetting(selector.CurrentRank, out AugmentRankSetting rank))
+        {
+            rankText.text = $"{rank.displayName} 증강";
+            rankText.color = rank.color;
+        }
+    }
+
+    private void ShowGuns()
+    {
+        GunDatabase guns = selector.GunDatabase;
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            GunData data = guns != null && i < AugmentSelector.ChoiceCount
+                ? guns.Get(selector.GetChoice(i))
+                : null;
+            buttons[i].SetData(data, gunColor);
+        }
+
+        if (rankText != null)
+        {
+            rankText.text = gunTitle;
+            rankText.color = gunColor;
+        }
     }
 
     public void Hide()
