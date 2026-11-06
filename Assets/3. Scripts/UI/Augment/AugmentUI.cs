@@ -9,6 +9,7 @@ public class AugmentUI : MonoBehaviour
     [SerializeField] private TMP_Text rankText; // 선택 사항: "골드 증강" 같은 랭크 표시
     [SerializeField] private string gunTitle = "총 선택";
     [SerializeField] private Color gunColor = new(1f, 0.45f, 0.35f);
+    [SerializeField] private Sprite gunFrame; // 총 선택 카드 배경 프레임
     [SerializeField] private float inputBlockDuration = 1f; // 패널이 뜬 직후 오클릭 방지
 
     private AugmentSelector selector;
@@ -66,7 +67,7 @@ public class AugmentUI : MonoBehaviour
             GunData data = guns != null && i < AugmentSelector.ChoiceCount
                 ? guns.Get(selector.GetChoice(i))
                 : null;
-            buttons[i].SetData(data, gunColor);
+            buttons[i].SetData(data, gunColor, gunFrame);
         }
 
         if (rankText != null)

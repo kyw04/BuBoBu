@@ -9,6 +9,7 @@ public class AugmentButton : MonoBehaviour
     [SerializeField] private TMP_Text nameText; // 선택 사항
     [SerializeField] private TMP_Text descriptionText;
     [SerializeField] private Graphic rankFrame; // 선택 사항: 랭크 색으로 칠할 테두리/배경
+    [SerializeField] private Image background; // 선택 사항: 랭크 프레임 스프라이트를 표시할 카드 배경
 
     private Button button;
 
@@ -23,13 +24,17 @@ public class AugmentButton : MonoBehaviour
             return;
         }
 
-        Color? frameColor = database != null && database.TryGetRankSetting(data.Rank, out AugmentRankSetting rank)
-            ? rank.color
-            : null;
-        Set(data.DisplayName, data.Description, data.Icon, frameColor);
+        Color? frameColor = null;
+        Sprite frameSprite = null;
+        if (database != null && database.TryGetRankSetting(data.Rank, out AugmentRankSetting rank))
+        {
+            frameColor = rank.color;
+            frameSprite = rank.frame;
+        }
+        Set(data.DisplayName, data.Description, data.Icon, frameColor, frameSprite);
     }
 
-    public void SetData(GunData data, Color frameColor)
+    public void SetData(GunData data, Color frameColor, Sprite frameSprite)
     {
         if (data == null)
         {
@@ -37,10 +42,10 @@ public class AugmentButton : MonoBehaviour
             return;
         }
 
-        Set(data.DisplayName, data.Description, data.Icon, frameColor);
+        Set(data.DisplayName, data.Description, data.Icon, frameColor, frameSprite);
     }
 
-    private void Set(string displayName, string description, Sprite icon, Color? frameColor)
+    private void Set(string displayName, string description, Sprite icon, Color? frameColor, Sprite frameSprite)
     {
         gameObject.SetActive(true);
 
@@ -58,6 +63,13 @@ public class AugmentButton : MonoBehaviour
 
         if (rankFrame != null && frameColor.HasValue)
             rankFrame.color = frameColor.Value;
+
+        if (background != null && frameSprite != null)
+        {
+            background.sprite = frameSprite;
+            background.type = Image.Type.Simple;
+            background.color = Color.white; // 프레임 원본 색 그대로 표시
+        }
 
         Button.interactable = true;
     }

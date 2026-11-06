@@ -7,6 +7,7 @@ public struct AugmentRankSetting
     public AugmentRank rank;
     public string displayName;
     public Color color;
+    public Sprite frame; // 증강 카드 배경으로 쓸 랭크 프레임
     [Min(0)] public float weight; // 게임 시작 시 랭크 순서를 뽑을 때의 가중치
 }
 

@@ -17,3 +17,19 @@ MonoBehaviour:
   - {fileID: 11400000, guid: dde909dbf752a0842877f63d7097dc10, type: 2}
   - {fileID: 11400000, guid: eca84d411eca56c4facf46b52880c2b2, type: 2}
   - {fileID: 11400000, guid: 7bff602aeaa597c4fa6cdba9ed2c3372, type: 2}
+  rankSettings:
+  - rank: 0
+    displayName: "\uC2E4\uBC84"
+    color: {r: 0.75, g: 0.78, b: 0.82, a: 1}
+    frame: {fileID: 21300000, guid: fdce9ff7cd8ca764fa2beb10baf21412, type: 3}
+    weight: 50
+  - rank: 1
+    displayName: "\uACE8\uB4DC"
+    color: {r: 1, g: 0.78, b: 0.25, a: 1}
+    frame: {fileID: 21300000, guid: 2bac3d6d01353e344aaf849567cb7bc3, type: 3}
+    weight: 35
+  - rank: 2
+    displayName: "\uD50C\uB798\uD2F0\uB118"
+    color: {r: 0.55, g: 0.9, b: 0.85, a: 1}
+    frame: {fileID: 21300000, guid: d3284dd6715fb6b4d9f96cc83f916efc, type: 3}
+    weight: 15
