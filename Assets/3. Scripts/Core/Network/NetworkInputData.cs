@@ -7,6 +7,7 @@ namespace PangPangShotNetwork
     {
         public const int JumpButton = 0;
         public const int AttackButton = 1;
+        public const int ReloadButton = 2;
 
         public Vector2 Move;
         public Vector2 AimPoint;

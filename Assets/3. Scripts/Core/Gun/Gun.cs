@@ -1,5 +1,6 @@
 using Fusion;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Gun : NetworkBehaviour
 {
@@ -8,9 +9,11 @@ public class Gun : NetworkBehaviour
     [SerializeField] private Transform firePoint;
     [SerializeField] private EffectData fireEffect; // 플레이어 공격
     [SerializeField] private GunDatabase database;  // 총 증강으로 바꿀 수 있는 총 목록
+    [SerializeField] private Image AmmoImage;
 
+    [Networked] private int Ammo { get; set; }
     [Networked] private TickTimer CooldownTimer { get; set; }
-    [Networked] private int BulletCount { get; set; }
+    [Networked] private TickTimer ReloadTimer { get; set; }
     [Networked] private Vector2 AimDirection { get; set; }
     [Networked] private int FireCount { get; set; } // 발사는 서버에서만 일어나므로 클라이언트 연출용으로 동기화
     [Networked] private int GunId { get; set; }     // 0 = 기본 총, n = database의 n-1번 총
@@ -40,6 +43,7 @@ public class Gun : NetworkBehaviour
         changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
         ApplyAim();
         ApplyGunData();
+        Ammo = (int)stats.GetStat(GunStatType.Ammo);
     }
 
     // 서버 전용: database의 index번 총으로 교체. -1이면 기본 총
@@ -65,7 +69,8 @@ public class Gun : NetworkBehaviour
     public override void Render()
     {
         ApplyAim();
-
+        AmmoImageRefresh();
+        
         foreach (var change in changes.DetectChanges(this))
         {
             if (change == nameof(FireCount))
@@ -77,11 +82,16 @@ public class Gun : NetworkBehaviour
 
     public void Fire()
     {
-        if (!CooldownTimer.ExpiredOrNotRunning(Runner)) return;
+        if (!CooldownTimer.ExpiredOrNotRunning(Runner) || Ammo <= 0) 
+            return;
 
         CooldownTimer = TickTimer.CreateFromSeconds(Runner, stats.GetStat(GunStatType.FireSpeed));
         FireCount++;
-
+        if (Ammo-- <= 1)
+        {
+            Reload();
+        }
+        
         Vector2 direction = firePoint.position - transform.position;
         Runner.Spawn(bulletPrefab, firePoint.position, onBeforeSpawned: (runner, obj) =>
         {
@@ -89,6 +99,34 @@ public class Gun : NetworkBehaviour
         });
     }
 
+    public void Reload()
+    {
+        if (!ReloadTimer.ExpiredOrNotRunning(Runner))
+            return;
+        
+        Ammo = 0;
+        ReloadTimer = TickTimer.CreateFromSeconds(Runner, stats.GetStat(GunStatType.ReloadTime));
+    }
+
+    private void AmmoImageRefresh()
+    {
+        int maxAmmo = (int)stats.GetStat(GunStatType.Ammo);
+        float fill = (float)Ammo / maxAmmo;
+        float? remaining = ReloadTimer.RemainingTime(Runner);
+        if (remaining is > 0)
+        {
+            float reloadTime = stats.GetStat(GunStatType.ReloadTime);
+            fill = (reloadTime - remaining.Value) / reloadTime;
+        }
+        AmmoImage.fillAmount = fill;
+        
+        if (ReloadTimer.Expired(Runner))
+        {
+            ReloadTimer = TickTimer.None;
+            Ammo = maxAmmo;
+        }
+    }
+    
     private void ApplyGunData()
     {
         GunData data = CurrentData;

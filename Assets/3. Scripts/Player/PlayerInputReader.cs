@@ -17,6 +17,8 @@ namespace Player
         public Vector2 AimPoint { get; private set; }
         public bool JumpPressed { get; private set; }
         public bool AttackPressed { get; private set; }
+        public bool ReloadPressed { get; private set; }
+        
         public bool HasInput { get; private set; }
 
         public override void Spawned()
@@ -40,6 +42,7 @@ namespace Player
                 Move = Vector2.zero;
                 JumpPressed = false;
                 AttackPressed = false;
+                ReloadPressed = false;
                 return;
             }
 
@@ -48,6 +51,7 @@ namespace Player
             AimPoint = input.AimPoint;
             JumpPressed = input.Buttons.WasPressed(PreviousButtons, NetworkInputData.JumpButton);
             AttackPressed = input.Buttons.WasPressed(PreviousButtons, NetworkInputData.AttackButton);
+            ReloadPressed = input.Buttons.WasPressed(PreviousButtons, NetworkInputData.ReloadButton);
 
             PreviousButtons = input.Buttons;
         }

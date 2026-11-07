@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace PangPangShotNetwork
 {
@@ -32,6 +31,7 @@ namespace PangPangShotNetwork
             };
             data.Buttons.Set(NetworkInputData.JumpButton, actions.Player.Jump.IsPressed());
             data.Buttons.Set(NetworkInputData.AttackButton, actions.Player.Attack.IsPressed());
+            data.Buttons.Set(NetworkInputData.ReloadButton, actions.Player.Reload.IsPressed());
 
             input.Set(data);
         }

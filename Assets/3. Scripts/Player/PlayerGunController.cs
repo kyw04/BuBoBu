@@ -16,14 +16,23 @@ namespace Player
 
         public override void FixedUpdateNetwork()
         {
-            if (!inputReader.HasInput) return;
+            if (!inputReader.HasInput)
+                return;
 
             gun.Aim(inputReader.AimPoint);
 
-            if (!Runner.IsServer) return;
-            if (!inputReader.AttackPressed) return;
-            
-            gun.Fire();
+            if (!Runner.IsServer)
+                return;
+
+            if (inputReader.AttackPressed)
+            {
+                gun.Fire();
+            }
+
+            if (inputReader.ReloadPressed)
+            {
+                gun.Reload();
+            }
         }
     }
 }
