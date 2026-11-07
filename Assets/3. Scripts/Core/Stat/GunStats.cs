@@ -4,7 +4,7 @@ using UnityEngine;
 public enum GunStatType
 {
     Ammo,
-    Range,
+    Angle,
     ReloadTime,
     FireSpeed,
     BulletCount,
