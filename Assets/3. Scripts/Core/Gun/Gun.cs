@@ -1,6 +1,7 @@
 using Fusion;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class Gun : NetworkBehaviour
 {
@@ -84,19 +85,23 @@ public class Gun : NetworkBehaviour
     {
         if (!CooldownTimer.ExpiredOrNotRunning(Runner) || Ammo <= 0) 
             return;
-
-        CooldownTimer = TickTimer.CreateFromSeconds(Runner, stats.GetStat(GunStatType.FireSpeed));
-        FireCount++;
-        if (Ammo-- <= 1)
-        {
-            Reload();
-        }
         
-        Vector2 direction = firePoint.position - transform.position;
-        Runner.Spawn(bulletPrefab, firePoint.position, onBeforeSpawned: (runner, obj) =>
+        CooldownTimer = TickTimer.CreateFromSeconds(Runner, stats.GetStat(GunStatType.FireSpeed));
+
+        float range = stats.GetStat(GunStatType.Angle) / 2f;
+        for (int i = 0; i < stats.GetStat(GunStatType.BulletCount); i++)
         {
-            obj.GetComponent<Bullet>().Initialize(owner, runner, direction.normalized);
-        });
+            float randomValue = Random.Range(-range, range);
+            Vector2 direction = Quaternion.Euler(0, 0, randomValue) * (firePoint.position - transform.position).normalized;
+            Runner.Spawn(bulletPrefab, firePoint.position, onBeforeSpawned: (runner, obj) =>
+            {
+                obj.GetComponent<Bullet>().Initialize(owner, runner, direction.normalized);
+            });
+        }
+        FireCount++;
+
+        if (Ammo-- <= 1)
+            Reload();
     }
 
     public void Reload()
@@ -147,5 +152,17 @@ public class Gun : NetworkBehaviour
         Vector3 scale = transform.localScale;
         scale.y = Mathf.Abs(scale.y) * (direction.x < 0f ? -1f : 1f);
         transform.localScale = scale;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red; 
+        float range = 50f;
+        Vector2 direction = firePoint.position - transform.position;
+        Vector2 dir2 = Quaternion.Euler(0, 0, range / 2) * direction;
+        Vector2 dir3 = Quaternion.Euler(0, 0, -range / 2) * direction;
+        Gizmos.DrawRay(firePoint.position, direction.normalized * 5);
+        Gizmos.DrawRay(firePoint.position, dir2.normalized * 5);
+        Gizmos.DrawRay(firePoint.position, dir3.normalized * 5);
     }
 }
