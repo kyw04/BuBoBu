@@ -10,7 +10,7 @@ public class Gun : NetworkBehaviour
     [SerializeField] private Transform firePoint;
     [SerializeField] private EffectData fireEffect; // 플레이어 공격
     [SerializeField] private GunDatabase database;  // 총 증강으로 바꿀 수 있는 총 목록
-    [SerializeField] private Image AmmoImage;
+    [SerializeField] private Image ammoImage;
 
     [Networked] private int Ammo { get; set; }
     [Networked] private TickTimer CooldownTimer { get; set; }
@@ -25,6 +25,23 @@ public class Gun : NetworkBehaviour
 
     public GunDatabase Database => database;
     public GunData CurrentData => database != null ? database.Get(GunId - 1) : null;
+
+    public int MaxAmmo => (int)stats.GetStat(GunStatType.Ammo);
+    public bool IsReloading => ReloadTimer.IsRunning;
+
+    public float AmmoFill
+    {
+        get
+        {
+            if (IsReloading)
+            {
+                float total = stats.GetStat(GunStatType.ReloadTime);
+                float remaining = ReloadTimer.RemainingTime(Runner) ?? 0f;
+                return total > 0f ? 1f - remaining / total : 1f;
+            }
+            return MaxAmmo > 0 ? (float)Ammo / MaxAmmo : 0f;
+        }
+    }
 
     private Entity owner;
     private float orbitRadius;
@@ -44,7 +61,35 @@ public class Gun : NetworkBehaviour
         changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
         ApplyAim();
         ApplyGunData();
-        Ammo = (int)stats.GetStat(GunStatType.Ammo);
+
+        if (HasStateAuthority)
+            Ammo = MaxAmmo;
+    }
+
+    public override void FixedUpdateNetwork()
+    {
+        if (!HasStateAuthority) return;
+
+        if (ReloadTimer.Expired(Runner))
+        {
+            ReloadTimer = TickTimer.None;
+            Ammo = MaxAmmo;
+        }
+    }
+
+    public override void Render()
+    {
+        ApplyAim();
+        ammoImage.fillAmount = AmmoFill;
+        
+        
+        foreach (var change in changes.DetectChanges(this))
+        {
+            if (change == nameof(FireCount))
+                fireEffect.Play(firePoint.position, firePoint.rotation);
+            else if (change == nameof(GunId))
+                ApplyGunData();
+        }
     }
 
     // 서버 전용: database의 index번 총으로 교체. -1이면 기본 총
@@ -54,6 +99,9 @@ public class Gun : NetworkBehaviour
 
         GunId = index + 1;
         ApplyGunData(); // 데디케이티드 서버는 Render가 안 돌 수 있으므로 바로 적용
+
+        ReloadTimer = TickTimer.None;
+        Ammo = MaxAmmo;
     }
 
     public void ResetGun() => SetGun(-1);
@@ -67,71 +115,35 @@ public class Gun : NetworkBehaviour
         ApplyAim();
     }
 
-    public override void Render()
-    {
-        ApplyAim();
-        AmmoImageRefresh();
-        
-        foreach (var change in changes.DetectChanges(this))
-        {
-            if (change == nameof(FireCount))
-                fireEffect.Play(firePoint.position, firePoint.rotation);
-            else if (change == nameof(GunId))
-                ApplyGunData();
-        }
-    }
-
     public void Fire()
     {
-        if (!CooldownTimer.ExpiredOrNotRunning(Runner) || Ammo <= 0) 
+        if (IsReloading || Ammo <= 0 || !CooldownTimer.ExpiredOrNotRunning(Runner))
             return;
-        
+
         CooldownTimer = TickTimer.CreateFromSeconds(Runner, stats.GetStat(GunStatType.FireSpeed));
 
-        float range = stats.GetStat(GunStatType.Angle) / 2f;
-        for (int i = 0; i < stats.GetStat(GunStatType.BulletCount); i++)
+        float halfAngle = stats.GetStat(GunStatType.Angle) / 2f;
+        int count = (int)stats.GetStat(GunStatType.BulletCount);
+        Vector2 forward = (firePoint.position - transform.position).normalized;
+        for (int i = 0; i < count; i++)
         {
-            float randomValue = Random.Range(-range, range);
-            Vector2 direction = Quaternion.Euler(0, 0, randomValue) * (firePoint.position - transform.position).normalized;
+            Vector2 direction = Quaternion.Euler(0, 0, Random.Range(-halfAngle, halfAngle)) * forward;
             Runner.Spawn(bulletPrefab, firePoint.position, onBeforeSpawned: (runner, obj) =>
-            {
-                obj.GetComponent<Bullet>().Initialize(owner, runner, direction.normalized);
-            });
+                obj.GetComponent<Bullet>().Initialize(owner, runner, direction));
         }
-        FireCount++;
 
-        if (Ammo-- <= 1)
+        FireCount++;
+        if (--Ammo <= 0)
             Reload();
     }
 
     public void Reload()
     {
-        if (!ReloadTimer.ExpiredOrNotRunning(Runner))
-            return;
-        
-        Ammo = 0;
+        if (IsReloading || Ammo >= MaxAmmo) return;
+
         ReloadTimer = TickTimer.CreateFromSeconds(Runner, stats.GetStat(GunStatType.ReloadTime));
     }
 
-    private void AmmoImageRefresh()
-    {
-        int maxAmmo = (int)stats.GetStat(GunStatType.Ammo);
-        float fill = (float)Ammo / maxAmmo;
-        float? remaining = ReloadTimer.RemainingTime(Runner);
-        if (remaining is > 0)
-        {
-            float reloadTime = stats.GetStat(GunStatType.ReloadTime);
-            fill = (reloadTime - remaining.Value) / reloadTime;
-        }
-        AmmoImage.fillAmount = fill;
-        
-        if (ReloadTimer.Expired(Runner))
-        {
-            ReloadTimer = TickTimer.None;
-            Ammo = maxAmmo;
-        }
-    }
-    
     private void ApplyGunData()
     {
         GunData data = CurrentData;
@@ -156,12 +168,13 @@ public class Gun : NetworkBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.red; 
-        float range = 50f;
+        if (firePoint == null) return;
+
+        Gizmos.color = Color.red;
+        float range = stats != null ? stats.GetStat(GunStatType.Angle) : 30f;
         Vector2 direction = firePoint.position - transform.position;
         Vector2 dir2 = Quaternion.Euler(0, 0, range / 2) * direction;
         Vector2 dir3 = Quaternion.Euler(0, 0, -range / 2) * direction;
-        Gizmos.DrawRay(firePoint.position, direction.normalized * 5);
         Gizmos.DrawRay(firePoint.position, dir2.normalized * 5);
         Gizmos.DrawRay(firePoint.position, dir3.normalized * 5);
     }

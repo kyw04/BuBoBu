@@ -25,14 +25,10 @@ namespace Player
                 return;
 
             if (inputReader.AttackPressed)
-            {
                 gun.Fire();
-            }
 
             if (inputReader.ReloadPressed)
-            {
                 gun.Reload();
-            }
         }
     }
 }

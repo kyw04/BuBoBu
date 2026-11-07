@@ -339,7 +339,7 @@ MonoBehaviour:
     sound: {fileID: 0}
     particle: {fileID: 0}
   database: {fileID: 11400000, guid: 97aaf014d4a4e744a81ebccb40d3ed24, type: 2}
-  AmmoImage: {fileID: 578670483599485496}
+  ammoImage: {fileID: 578670483599485496}
 --- !u!114 &6291377031919603107
 MonoBehaviour:
   m_ObjectHideFlags: 0
