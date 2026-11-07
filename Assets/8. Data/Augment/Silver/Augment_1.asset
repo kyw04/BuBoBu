@@ -10,14 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56e15c4bf8ae1b64492fb85bb005c2b0, type: 3}
-  m_Name: Augment_Damage
+  m_Name: Augment_1
   m_EditorClassIdentifier: Assembly-CSharp::AugmentData
-  displayName: "\uAC15\uD0C0"
-  description: "\uACF5\uACA9\uB825 +25"
+  displayName: "\uC2E41"
+  description: "\uCD5C\uB300\uCCB4\uB825(20)\uACFC \uACF5\uACA9\uB825(10)\uC744 \uC5BB\uC2B5\uB2C8\uB2E4"
   icon: {fileID: -1370922234, guid: 959ce7f05a48a1e4998e95bb8d148983, type: 3}
-  rank: 1
+  rank: 0
   modifiers:
+  - target: 0
+    playerStat: 1
+    gunStat: 0
+    value: 20
   - target: 0
     playerStat: 2
     gunStat: 0
-    value: 25
+    value: 10

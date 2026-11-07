@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56e15c4bf8ae1b64492fb85bb005c2b0, type: 3}
+  m_Name: Augment_9
+  m_EditorClassIdentifier: Assembly-CSharp::AugmentData
+  displayName: "\uACE89"
+  description: "\uACF5\uACA9\uC18D\uB3C4(-0.7)\uAC00 \uC99D\uAC00\uD558\uB294 \uB300\uC2E0 \uC0AC\uAC70\uB9AC(-2)\uAC00 \uAC10\uC18C\uD569\uB2C8\uB2E4"
+  icon: {fileID: 314188013, guid: f3ffe900923eea7459ca9eacff14ac4b, type: 3}
+  rank: 1
+  modifiers:
+  - target: 1
+    playerStat: 2
+    gunStat: 3
+    value: -0.7
+  - target: 1
+    playerStat: 2
+    gunStat: 1
+    value: 0
