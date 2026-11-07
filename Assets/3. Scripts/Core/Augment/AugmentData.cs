@@ -12,7 +12,14 @@ public enum AugmentRank
 public enum AugmentTarget
 {
     Player,
-    Gun
+    Gun,
+    Bullet
+}
+
+public enum ModifierType
+{
+    Flat,
+    Percent
 }
 
 [System.Serializable]
@@ -21,7 +28,9 @@ public struct AugmentModifier
     public AugmentTarget target;
     public PlayerStatType playerStat; // target == Player 일 때 사용
     public GunStatType gunStat;       // target == Gun 일 때 사용
-    public float value;               // Bonus에 더해지는 값
+    public BulletStatType bulletStat; // target == Bullet 일 때 사용
+    public ModifierType type;
+    public float value;            // Bonus에 더해지는 값
 }
 
 [CreateAssetMenu(fileName = "Augment", menuName = "BuBoBu/Augment/Augment Data")]
