@@ -10,14 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56e15c4bf8ae1b64492fb85bb005c2b0, type: 3}
-  m_Name: Augment_FireSpeed
+  m_Name: Augment_4
   m_EditorClassIdentifier: Assembly-CSharp::AugmentData
-  displayName: "\uC18D\uC0AC"
-  description: "\uBC1C\uC0AC \uAC04\uACA9 -0.05\uCD08"
+  displayName: "\uACE84"
+  description: "\uD0C4\uC54C \uC218(10)\uC640 \uC7A5\uC804\uC18D\uB3C4(-1)\uC744 \uC5BB\uC2B5\uB2C8\uB2E4"
   icon: {fileID: 314188013, guid: f3ffe900923eea7459ca9eacff14ac4b, type: 3}
-  rank: 0
+  rank: 1
   modifiers:
   - target: 1
-    playerStat: 0
-    gunStat: 3
-    value: -0.05
+    playerStat: 4
+    gunStat: 2
+    value: -1
+  - target: 1
+    playerStat: 5
+    gunStat: 0
+    value: 10
