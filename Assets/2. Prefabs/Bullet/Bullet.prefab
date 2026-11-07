@@ -210,6 +210,12 @@ MonoBehaviour:
     _value: 0
   animator: {fileID: 4676634648878000200}
   deathDuration: 0.85
+  spawnEffect:
+    sound: {fileID: 0}
+    particle: {fileID: 0}
+  deathEffect:
+    sound: {fileID: 0}
+    particle: {fileID: 0}
 --- !u!114 &-1429590751756025845
 MonoBehaviour:
   m_ObjectHideFlags: 0
