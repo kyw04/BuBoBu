@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Player
 {
     [RequireComponent(typeof(PlayerInputReader))]
-    public class PlayerFire : NetworkBehaviour
+    public class PlayerGunController : NetworkBehaviour
     {
         [SerializeField] private Gun gun;
         private PlayerInputReader inputReader;
