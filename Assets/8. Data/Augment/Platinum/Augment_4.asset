@@ -16,12 +16,30 @@ MonoBehaviour:
   description: "\uACF5\uACA9\uB825(200%)\uC774 \uC99D\uAC00\uD558\uACE0 \uD06C\uAE30\uAC00 \uC791\uC544\uC9C0\uB294 \uB300\uC2E0 \uCD5C\uB300\uCCB4\uB825(-60%)\uC774 \uAC10\uC18C\uD569\uB2C8\uB2E4 "
   icon: {fileID: 314188013, guid: f3ffe900923eea7459ca9eacff14ac4b, type: 3}
   rank: 2
-  modifiers:
-  - target: 0
-    playerStat: 2
-    gunStat: 3
-    value: 200
-  - target: 0
-    playerStat: 1
-    gunStat: 3
-    value: -60
+  triggers:
+  - rid: 3637287043308192299
+  conditions: []
+  effects:
+  - rid: 3637287043308192300
+  references:
+    version: 2
+    RefIds:
+    - rid: 3637287043308192299
+      type: {class: OnSelectTrigger, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 3637287043308192300
+      type: {class: AddStatEffect, ns: , asm: Assembly-CSharp}
+      data:
+        modifiers:
+        - target: 0
+          playerStat: 2
+          gunStat: 3
+          bulletStat: 0
+          type: 1
+          value: 200
+        - target: 0
+          playerStat: 1
+          gunStat: 3
+          bulletStat: 0
+          type: 1
+          value: -60

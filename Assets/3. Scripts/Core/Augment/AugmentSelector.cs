@@ -16,9 +16,8 @@ public class AugmentSelector : NetworkBehaviour
     [Networked] public NetworkBool IsGunChoice { get; private set; } // true면 선택지가 증강이 아니라 총 (GunDatabase 인덱스)
     [Networked] public int AugmentCount { get; private set; }        // 이번 게임에서 받은 증강 수 = 다음 랭크 순번
 
-    private PlayerStats playerStats;
-    private GunStats gunStats;
     private Gun gun;
+    private AugmentManager augmentManager; // 서버 전용: 획득한 증강의 트리거 관리
     private AugmentUI ui;
     private ChangeDetector changes;
     private readonly int[] pickBuffer = new int[ChoiceCount];
@@ -29,9 +28,8 @@ public class AugmentSelector : NetworkBehaviour
 
     public override void Spawned()
     {
-        playerStats = GetComponent<PlayerStats>();
-        gunStats = GetComponentInChildren<GunStats>();
         gun = GetComponentInChildren<Gun>();
+        augmentManager = new AugmentManager(GetComponent<Entity>());
 
         if (HasStateAuthority && offerOnSpawn)
             OfferAugments();
@@ -95,6 +93,7 @@ public class AugmentSelector : NetworkBehaviour
 
         AugmentCount = 0;
         IsChoosing = false;
+        augmentManager.Clear();
         IsGunChoice = false;
         if (gun != null)
             gun.ResetGun();
@@ -144,7 +143,7 @@ public class AugmentSelector : NetworkBehaviour
             AugmentData augment = database.Get(Choices[slot]);
             if (augment == null) return;
 
-            augment.Apply(playerStats, gunStats);
+            augmentManager.Add(augment); // trigger → condition → effect
         }
 
         AugmentCount++;

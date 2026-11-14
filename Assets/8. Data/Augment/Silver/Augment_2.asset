@@ -16,8 +16,25 @@ MonoBehaviour:
   description: "\uBC29\uC5B4\uB825(15)\uC744 \uC5BB\uC2B5\uB2C8\uB2E4\n"
   icon: {fileID: -1370922234, guid: 959ce7f05a48a1e4998e95bb8d148983, type: 3}
   rank: 0
-  modifiers:
-  - target: 0
-    playerStat: 3
-    gunStat: 0
-    value: 15
+  modifiers: []
+  triggers:
+  - rid: 3637287043308192321
+  conditions: []
+  effects:
+  - rid: 3637287043308192322
+  references:
+    version: 2
+    RefIds:
+    - rid: 3637287043308192321
+      type: {class: OnSelectTrigger, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 3637287043308192322
+      type: {class: AddStatEffect, ns: , asm: Assembly-CSharp}
+      data:
+        modifiers:
+        - target: 0
+          playerStat: 3
+          gunStat: 0
+          bulletStat: 0
+          type: 0
+          value: 15

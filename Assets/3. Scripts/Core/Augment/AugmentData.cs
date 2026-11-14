@@ -13,24 +13,8 @@ public enum AugmentTarget
 {
     Player,
     Gun,
-    Bullet
-}
-
-public enum ModifierType
-{
-    Flat,
-    Percent
-}
-
-[System.Serializable]
-public struct AugmentModifier
-{
-    public AugmentTarget target;
-    public PlayerStatType playerStat; // target == Player 일 때 사용
-    public GunStatType gunStat;       // target == Gun 일 때 사용
-    public BulletStatType bulletStat; // target == Bullet 일 때 사용
-    public ModifierType type;
-    public float value;            // Bonus에 더해지는 값
+    Bullet,
+    Other
 }
 
 [CreateAssetMenu(fileName = "Augment", menuName = "BuBoBu/Augment/Augment Data")]
@@ -40,27 +24,33 @@ public class AugmentData : ScriptableObject
     [SerializeField, TextArea] private string description;
     [SerializeField] private Sprite icon;
     [SerializeField] private AugmentRank rank;
-    [SerializeField] private List<AugmentModifier> modifiers = new();
 
+    [SerializeReference, SubclassSelector] private List<IAugmentTrigger> triggers = new();
+    [SerializeReference, SubclassSelector] private List<IAugmentCondition> conditions = new();
+    [SerializeReference, SubclassSelector] private List<IAugmentEffect> effects = new();
+    
     public string DisplayName => displayName;
     public string Description => description;
     public Sprite Icon => icon;
     public AugmentRank Rank => rank;
+    public IReadOnlyList<IAugmentTrigger> Triggers => triggers;
 
-    // 서버(StateAuthority)에서만 호출
-    public void Apply(PlayerStats playerStats, GunStats gunStats)
+    // 트리거가 발동했을 때 호출. 조건이 모두 맞으면(조건이 없으면 항상) 효과 적용
+    public void Apply(AugmentContext context)
     {
-        foreach (AugmentModifier modifier in modifiers)
+        if (!CheckConditions(context)) return;
+
+        foreach (IAugmentEffect effect in effects)
+            effect?.Apply(context);
+    }
+
+    private bool CheckConditions(AugmentContext context)
+    {
+        foreach (IAugmentCondition condition in conditions)
         {
-            switch (modifier.target)
-            {
-                case AugmentTarget.Player when playerStats != null:
-                    playerStats.AddBonusStat(modifier.playerStat, modifier.value);
-                    break;
-                case AugmentTarget.Gun when gunStats != null:
-                    gunStats.AddBonusStat(modifier.gunStat, modifier.value);
-                    break;
-            }
+            if (condition != null && !condition.Condition(context))
+                return false;
         }
+        return true;
     }
 }
