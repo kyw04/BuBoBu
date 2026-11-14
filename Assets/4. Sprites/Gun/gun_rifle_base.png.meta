@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 064c00220e9dc6b4d83a80c0ba6f8fb9
+guid: 87a4033269144f04d9ee8e70ebcb7781
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -318359896703651769
-    second: red_character_jump_0
+      213: -5939811042422932433
+    second: gun_rifle_base_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -42,7 +42,7 @@ TextureImporter:
     mipBias: 0
     wrapU: 1
     wrapV: 1
-    wrapW: 1
+    wrapW: 0
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -98,30 +98,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: red_character_jump_0
+      name: gun_rifle_base_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1856
-        height: 256
+        width: 128
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,8 +117,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 740bf365c55f49bf0800000000000000
-      internalID: -318359896703651769
+      spriteID: f2c307fc35d819da0800000000000000
+      internalID: -5939811042422932433
       vertices: []
       indices: 
       edges: []

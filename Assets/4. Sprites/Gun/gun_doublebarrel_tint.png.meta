@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: c6f43ddd77073ad4d954ab5624c41ad8
+guid: 7506c03d5d6d44e48863e417ad1c6c9f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7128767442446101291
-    second: default-gun_0
+      213: -6287239251633164138
+    second: gun_doublebarrel_tint_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 128
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -102,7 +102,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: default-gun_0
+      name: gun_doublebarrel_tint_0
       rect:
         serializedVersion: 2
         x: 0
@@ -117,8 +117,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5d451aae7c7811d90800000000000000
-      internalID: -7128767442446101291
+      spriteID: 690338c363d3fb8a0800000000000000
+      internalID: -6287239251633164138
       vertices: []
       indices: 
       edges: []
@@ -136,8 +136,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      default-gun_0: -7128767442446101291
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

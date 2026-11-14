@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: de512ed824ea24845bdf95f2d654c662
+guid: 1d20d67859af10644b27c5e5adaf0493
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1722244117628010422
-    second: player_0_run_0
+      213: 423444804100015584
+    second: player_0_run_base_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -115,7 +115,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: player_0_run_0
+      name: player_0_run_base_0
       rect:
         serializedVersion: 2
         x: 0
@@ -130,14 +130,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6bf39bf66e3a6e710800000000000000
-      internalID: 1722244117628010422
+      spriteID: 20016e9255654fd2af891ecd1f823bfc
+      internalID: 423444804100015584
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: player_0_run_1
+      name: player_0_run_base_1
       rect:
         serializedVersion: 2
         x: 302
@@ -152,14 +152,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9dacd55dbb765e24780ecf84e8910ccc
-      internalID: 1929473827
+      spriteID: e5915434150044e4b999fa01dff5a89e
+      internalID: 2750889213973113545
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: player_0_run_2
+      name: player_0_run_base_2
       rect:
         serializedVersion: 2
         x: 644
@@ -174,14 +174,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f726553fbe3a44b4aac7d95ad7cf05ee
-      internalID: 2027364375
+      spriteID: 24c512be6d324a54b985996e8751e851
+      internalID: 2321509169015539227
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: player_0_run_4
+      name: player_0_run_base_3
       rect:
         serializedVersion: 2
         x: 968
@@ -196,14 +196,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c925f593edef967448dbdec9fef922f8
-      internalID: 255710041
+      spriteID: bebbee5bab8a43f4a280a8bf425ac478
+      internalID: 1444117756836255959
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: player_0_run_5
+      name: player_0_run_base_4
       rect:
         serializedVersion: 2
         x: 1289
@@ -218,14 +218,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dfdd3073ff14faa449a439b420016860
-      internalID: 227132080
+      spriteID: 7d7b7f6c229f46e880a1b0792f4f0fd4
+      internalID: 3984017519470727439
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: player_0_run_6
+      name: player_0_run_base_5
       rect:
         serializedVersion: 2
         x: 1600
@@ -240,8 +240,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 73e3f8d988bacd64482909467751bba7
-      internalID: -1635219088
+      spriteID: e7cde126f67b463a9d6962a4a394feaf
+      internalID: 4608990972958861159
       vertices: []
       indices: 
       edges: []
@@ -250,7 +250,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 6830a8f136680654cbf1cd6fed27265e
+    spriteID: 88238e4c07ce44c89eea832017f1c91a
     internalID: 0
     vertices: []
     indices: 
@@ -262,13 +262,12 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":256.0,"y":256.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      player_0_run_0: 1722244117628010422
-      player_0_run_1: 1929473827
-      player_0_run_2: 2027364375
-      player_0_run_3: -829065571
-      player_0_run_4: 255710041
-      player_0_run_5: 227132080
-      player_0_run_6: -1635219088
+      player_0_run_base_0: 423444804100015584
+      player_0_run_base_1: 2750889213973113545
+      player_0_run_base_2: 2321509169015539227
+      player_0_run_base_3: 1444117756836255959
+      player_0_run_base_4: 3984017519470727439
+      player_0_run_base_5: 4608990972958861159
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
