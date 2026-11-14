@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Bullet : NetworkBehaviour, IAttacker, IPoolable
 {
-    [Networked] private BulletStats stats { get; set; }
+    [Networked] private BulletStats Stats { get; set; }
 
     public Entity Owner { get; private set; }
     public float Damage { get; private set; }
@@ -42,16 +42,16 @@ public class Bullet : NetworkBehaviour, IAttacker, IPoolable
 
     public void Initialize(Entity owner, NetworkRunner runner, Vector2 direction)
     {
-        if (stats == null)
-            stats = GetComponent<BulletStats>();
+        if (Stats == null)
+            Stats = GetComponent<BulletStats>();
 
         Owner = owner;
         Damage = owner.Damage;
         Direction = direction;
-        Speed = stats.GetStat(BulletStatType.Speed);
-        Range = stats.GetStat(BulletStatType.Range);
+        Speed = Stats.GetStat(BulletStatType.Speed);
+        Range = Stats.GetStat(BulletStatType.Range);
         InvincibilityTimer = TickTimer.CreateFromSeconds(runner, 0.1f);
-        LifeTimer = TickTimer.CreateFromSeconds(runner, stats.GetStat(BulletStatType.LifTime));
+        LifeTimer = TickTimer.CreateFromSeconds(runner, Stats.GetStat(BulletStatType.LifTime));
         RangeTimer = TickTimer.CreateFromSeconds(runner, Range / Speed);
     }
     

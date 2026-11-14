@@ -5,7 +5,8 @@ using Random = UnityEngine.Random;
 
 public class Gun : NetworkBehaviour
 {
-    public GunStats stats { get; private set; }
+    public GunStats Stats { get; private set; }
+    public BulletStats BulletStats { get; private set; }
     [SerializeField] private NetworkPrefabRef bulletPrefab;
     [SerializeField] private Transform firePoint;
     [SerializeField] private EffectData fireEffect; // 플레이어 공격
@@ -26,7 +27,7 @@ public class Gun : NetworkBehaviour
     public GunDatabase Database => database;
     public GunData CurrentData => database != null ? database.Get(GunId - 1) : null;
 
-    public int MaxAmmo => (int)stats.GetStat(GunStatType.Ammo);
+    public int MaxAmmo => (int)Stats.GetStat(GunStatType.Ammo);
     public bool IsReloading => ReloadTimer.IsRunning;
 
     public float AmmoFill
@@ -35,7 +36,7 @@ public class Gun : NetworkBehaviour
         {
             if (IsReloading)
             {
-                float total = stats.GetStat(GunStatType.ReloadTime);
+                float total = Stats.GetStat(GunStatType.ReloadTime);
                 float remaining = ReloadTimer.RemainingTime(Runner) ?? 0f;
                 return total > 0f ? 1f - remaining / total : 1f;
             }
@@ -45,10 +46,10 @@ public class Gun : NetworkBehaviour
 
     private Entity owner;
     private float orbitRadius;
-
+    
     private void Awake()
     {
-        stats = GetComponent<GunStats>();
+        Stats = GetComponent<GunStats>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer != null)
             defaultSprite = spriteRenderer.sprite;
@@ -63,7 +64,7 @@ public class Gun : NetworkBehaviour
         ApplyGunData();
 
         if (HasStateAuthority)
-            Ammo = MaxAmmo;
+            RefillAmmo();
     }
 
     public override void FixedUpdateNetwork()
@@ -73,7 +74,7 @@ public class Gun : NetworkBehaviour
         if (ReloadTimer.Expired(Runner))
         {
             ReloadTimer = TickTimer.None;
-            Ammo = MaxAmmo;
+            RefillAmmo();
         }
     }
 
@@ -101,7 +102,7 @@ public class Gun : NetworkBehaviour
         ApplyGunData(); // 데디케이티드 서버는 Render가 안 돌 수 있으므로 바로 적용
 
         ReloadTimer = TickTimer.None;
-        Ammo = MaxAmmo;
+        RefillAmmo();
     }
 
     public void ResetGun() => SetGun(-1);
@@ -120,10 +121,10 @@ public class Gun : NetworkBehaviour
         if (IsReloading || Ammo <= 0 || !CooldownTimer.ExpiredOrNotRunning(Runner))
             return;
 
-        CooldownTimer = TickTimer.CreateFromSeconds(Runner, stats.GetStat(GunStatType.FireSpeed));
+        CooldownTimer = TickTimer.CreateFromSeconds(Runner, Stats.GetStat(GunStatType.FireSpeed));
 
-        float halfAngle = stats.GetStat(GunStatType.Angle) / 2f;
-        int count = (int)stats.GetStat(GunStatType.BulletCount);
+        float halfAngle = Stats.GetStat(GunStatType.Angle) / 2f;
+        int count = (int)Stats.GetStat(GunStatType.BulletCount);
         Vector2 forward = (firePoint.position - transform.position).normalized;
         for (int i = 0; i < count; i++)
         {
@@ -141,13 +142,15 @@ public class Gun : NetworkBehaviour
     {
         if (IsReloading || Ammo >= MaxAmmo) return;
 
-        ReloadTimer = TickTimer.CreateFromSeconds(Runner, stats.GetStat(GunStatType.ReloadTime));
+        ReloadTimer = TickTimer.CreateFromSeconds(Runner, Stats.GetStat(GunStatType.ReloadTime));
     }
 
+    public void RefillAmmo() => Ammo = MaxAmmo;
+    
     private void ApplyGunData()
     {
         GunData data = CurrentData;
-        stats.SetData(data);
+        Stats.SetData(data);
 
         if (spriteRenderer != null)
             spriteRenderer.sprite = data != null && data.Sprite != null ? data.Sprite : defaultSprite;
@@ -171,7 +174,7 @@ public class Gun : NetworkBehaviour
         if (firePoint == null) return;
 
         Gizmos.color = Color.red;
-        float range = stats != null ? stats.GetStat(GunStatType.Angle) : 30f;
+        float range = Stats != null ? Stats.GetStat(GunStatType.Angle) : 30f;
         Vector2 direction = firePoint.position - transform.position;
         Vector2 dir2 = Quaternion.Euler(0, 0, range / 2) * direction;
         Vector2 dir3 = Quaternion.Euler(0, 0, -range / 2) * direction;

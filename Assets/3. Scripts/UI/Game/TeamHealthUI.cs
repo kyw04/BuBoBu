@@ -64,7 +64,7 @@ public class TeamHealthUI : MonoBehaviour
             slot.healthBar.color = color;
             slot.healthBar.fillAmount = entity == null ? 1f
                 : entity.IsDead ? 0f
-                : Mathf.Clamp01(entity.stats.Health / Mathf.Max(entity.stats.MaxHealth, 1f));
+                : Mathf.Clamp01(entity.Stats.Health / Mathf.Max(entity.Stats.MaxHealth, 1f));
         }
     }
 }

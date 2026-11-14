@@ -5,13 +5,13 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerStats))]
 public class Entity : NetworkBehaviour, IDamageable
 {
-    public PlayerStats stats { get; private set; }
+    public PlayerStats Stats { get; private set; }
     public float Damage { get; private set; }
     [Networked] private Gun EquippedGun { get; set; }
     [Networked] public int Team { get; set; }
+    [Networked] private int HitCount { get; set; } // 피격 연출 동기화용
     [Networked] public NetworkString<_16> PlayerName { get; set; } // 서버가 연결 토큰에서 읽어 설정
     [Networked] public NetworkBool IsDead { get; private set; }
-    [Networked] private int HitCount { get; set; } // 피격 연출 동기화용
 
     [SerializeField] private EffectData hitEffect; // 플레이어 피격
 
@@ -22,12 +22,15 @@ public class Entity : NetworkBehaviour, IDamageable
     private ChangeDetector changes;
     private GameManager game;
 
+    
     private GameManager Game => game != null ? game : game = GameManager.Get(Runner);
     public bool CanAct => !IsDead && (Game == null || Game.CanAct);
+    public GunStats GunStats => EquippedGun.Stats;
+    public BulletStats BulletStats => EquippedGun.BulletStats; 
 
     public void Awake()
     {
-        stats = GetComponent<PlayerStats>();
+        Stats = GetComponent<PlayerStats>();
         rb = GetComponent<Rigidbody2D>();
         networkRb = GetComponent<NetworkRigidbody2D>();
         renderers = GetComponentsInChildren<Renderer>(true);
@@ -62,12 +65,12 @@ public class Entity : NetworkBehaviour, IDamageable
     public void ChangeGun(Gun newGun)
     {
         EquippedGun = newGun;
-        Damage = stats.Damage;
+        Damage = Stats.Damage;
 
         if (EquippedGun == null)
             return;
 
-        Damage *= EquippedGun.stats.DamageMultiplier;
+        Damage *= EquippedGun.Stats.DamageMultiplier;
     }
 
     public void TakeDamage(IAttacker attacker)
@@ -75,9 +78,10 @@ public class Entity : NetworkBehaviour, IDamageable
         if (IsDead) return;
         if (Game != null && Game.Phase != GamePhase.Playing) return; // 로비 등 라운드 밖에서는 무적
 
-        stats.AddBonusStat(PlayerStatType.Health, -Mathf.Max(attacker.Damage - stats.Defense, 0f));
+        Stats.AddBonusStat(PlayerStatType.Health, -Mathf.Max(attacker.Damage - Stats.Defense, 0f));
         HitCount++;
-        if (stats.Health <= 0f)
+        
+        if (Stats.Health <= 0f)
             Die();
     }
 
@@ -95,9 +99,10 @@ public class Entity : NetworkBehaviour, IDamageable
     {
         if (!HasStateAuthority) return;
 
-        stats.SetBonusStat(PlayerStatType.Health, stats.MaxHealth - stats.GetDefaultStat(PlayerStatType.Health));
-        Damage = stats.Damage * (EquippedGun != null ? EquippedGun.stats.DamageMultiplier : 1f); // 증강 반영
-
+        Stats.SetBonusStat(PlayerStatType.Health, Stats.MaxHealth - Stats.GetDefaultStat(PlayerStatType.Health));
+        Damage = Stats.Damage * (EquippedGun != null ? EquippedGun.Stats.DamageMultiplier : 1f); // 증강 반영
+        EquippedGun!.RefillAmmo();
+        
         rb.linearVelocity = Vector2.zero;
         if (networkRb != null)
             networkRb.Teleport(position);
@@ -113,9 +118,9 @@ public class Entity : NetworkBehaviour, IDamageable
     {
         if (!HasStateAuthority) return;
 
-        stats.ResetBonuses();
+        Stats.ResetBonuses();
         if (EquippedGun != null)
-            EquippedGun.stats.ResetBonuses();
+            EquippedGun.Stats.ResetBonuses();
     }
 
     private void ApplyDeadState()
