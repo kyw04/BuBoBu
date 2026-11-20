@@ -4,10 +4,10 @@ using UnityEngine;
 // 씬의 Augment Canvas에 붙음. 로컬 플레이어의 AugmentSelector가 찾아서 Show/Hide 호출
 public class AugmentUI : MonoBehaviour
 {
+    [SerializeField] private GameManager game;
     [SerializeField] private GameObject panel;
     [SerializeField] private AugmentButton[] buttons;
-    [SerializeField] private TMP_Text rankText; // 선택 사항: "골드 증강" 같은 랭크 표시
-    [SerializeField] private string gunTitle = "총 선택";
+    [SerializeField] private TMP_Text timeText;
     [SerializeField] private Color gunColor = new(1f, 0.45f, 0.35f);
     [SerializeField] private Sprite gunFrame; // 총 선택 카드 배경 프레임
     [SerializeField] private float inputBlockDuration = 1f; // 패널이 뜬 직후 오클릭 방지
@@ -24,6 +24,18 @@ public class AugmentUI : MonoBehaviour
         }
 
         Hide();
+    }
+
+    private void Update()
+    {
+        if (timeText == null)
+            return;
+
+        bool playing = game != null && game.Object && game.Object.IsValid && game.Phase == GamePhase.AugmentSelect;
+        if (!playing)
+            return;
+        
+        timeText.text = $"증강 선택까지 {Mathf.CeilToInt(game.RemainingTime)}초 남음";
     }
 
     public void Show(AugmentSelector target)
@@ -51,12 +63,6 @@ public class AugmentUI : MonoBehaviour
                 : null;
             buttons[i].SetData(data, selector.Database);
         }
-
-        if (rankText != null && selector.Database.TryGetRankSetting(selector.CurrentRank, out AugmentRankSetting rank))
-        {
-            rankText.text = $"{rank.displayName} 증강";
-            rankText.color = rank.color;
-        }
     }
 
     private void ShowGuns()
@@ -68,12 +74,6 @@ public class AugmentUI : MonoBehaviour
                 ? guns.Get(selector.GetChoice(i))
                 : null;
             buttons[i].SetData(data, gunColor, gunFrame);
-        }
-
-        if (rankText != null)
-        {
-            rankText.text = gunTitle;
-            rankText.color = gunColor;
         }
     }
 
