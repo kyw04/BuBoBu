@@ -654,6 +654,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tail
   speed: 10
+  snapDistance: 3
 --- !u!1 &6279623256942273158
 GameObject:
   m_ObjectHideFlags: 0
