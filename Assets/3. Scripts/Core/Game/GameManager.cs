@@ -29,6 +29,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private Transform[] team2SpawnPoints;
     [SerializeField, Min(1)] private int minPlayersPerTeam = 1; // 각 팀 최소 인원이 차야 시작 가능
     [SerializeField] private float roundStartDelay = 3f;
+    [SerializeField] private float roundTimeLimit = 60f; // 시간이 다 되면 남은 체력 퍼센트가 높은 팀이 승리
     [SerializeField] private float augmentTimeLimit = 15f; // 시간 초과 시 남은 선택은 랜덤 적용
     [SerializeField] private float startAugmentTimeLimit = 15f; // 게임 시작 시 전원 증강 선택 제한 시간
     [SerializeField] private float gameOverDuration = 5f;
@@ -40,6 +41,7 @@ public class GameManager : NetworkBehaviour
     [Networked] public GamePhase Phase { get; private set; }
     [Networked] public int Round { get; private set; }
     [Networked] public int LastRoundWinner { get; private set; } // 무승부면 -1
+    [Networked] public NetworkBool LastRoundTimeout { get; private set; } // 지난 라운드가 시간 종료로 끝났는지
     [Networked] public TickTimer PhaseTimer { get; private set; }
     [Networked] public PlayerRef Host { get; private set; }
     [Networked, Capacity(TeamCount)] private NetworkArray<int> Wins => default;
@@ -52,6 +54,7 @@ public class GameManager : NetworkBehaviour
     private TickTimer closeTimer;
     private bool shuttingDown;
 
+    public float RoundTimeLimit { get => roundTimeLimit; private set => roundTimeLimit = value; }
     public bool CanAct => Phase is GamePhase.Lobby or GamePhase.Playing;
     public int MinPlayersPerTeam => minPlayersPerTeam;
     public bool CanStart => Phase == GamePhase.Lobby
@@ -109,11 +112,16 @@ public class GameManager : NetworkBehaviour
         {
             case GamePhase.RoundStart:
                 if (PhaseTimer.Expired(Runner))
+                {
                     Phase = GamePhase.Playing;
+                    PhaseTimer = TickTimer.CreateFromSeconds(Runner, roundTimeLimit);
+                }
                 break;
 
             case GamePhase.Playing:
                 CheckRoundEnd();
+                if (Phase == GamePhase.Playing)
+                    CheckRoundTimeout();
                 break;
 
             case GamePhase.AugmentSelect:
@@ -227,11 +235,49 @@ public class GameManager : NetworkBehaviour
         {
             // 동시 전멸은 무승부로 처리하고 라운드 재시작
             LastRoundWinner = -1;
+            LastRoundTimeout = false;
             StartRound();
             return;
         }
 
+        LastRoundTimeout = false;
         EndRound(alive1 > 0 ? 0 : 1);
+    }
+
+    // 서버 전용: 라운드 시간이 끝나면 팀별 남은 체력 퍼센트를 비교. 같으면 무승부로 라운드 재시작
+    private void CheckRoundTimeout()
+    {
+        if (!PhaseTimer.Expired(Runner)) return;
+
+        LastRoundTimeout = true;
+        float percent1 = GetTeamHealthPercent(0);
+        float percent2 = GetTeamHealthPercent(1);
+
+        if (Mathf.Approximately(percent1, percent2))
+        {
+            LastRoundWinner = -1;
+            StartRound();
+            return;
+        }
+
+        int winner = percent1 > percent2 ? 0 : 1;
+        EndRound(winner);
+    }
+
+    // 팀원별 남은 체력 비율(현재/최대)의 평균 (0~1). 죽은 팀원은 0으로 계산
+    public float GetTeamHealthPercent(int team)
+    {
+        float total = 0f;
+        int count = 0;
+        foreach (Entity entity in Players)
+        {
+            if (entity.Team != team) continue;
+
+            count++;
+            if (entity.IsDead) continue;
+            total += Mathf.Clamp01(entity.Stats.Health / Mathf.Max(entity.Stats.MaxHealth, 1f));
+        }
+        return count > 0 ? total / count : 0f;
     }
 
     private void EndRound(int winner)
@@ -265,6 +311,7 @@ public class GameManager : NetworkBehaviour
             Wins.Set(i, 0);
         Round = 0;
         LastRoundWinner = -1;
+        LastRoundTimeout = false;
 
         var teamIndex = new int[TeamCount];
         foreach (Entity entity in Players)

@@ -47,16 +47,20 @@ public class GameMessageUI : MonoBehaviour
     {
         int winner = game.LastRoundWinner + 1;
         int loser = 3 - winner;
+        // 시간 종료로 끝난 라운드면 앞에 안내를 붙임
+        string timeout = game.LastRoundTimeout ? "시간 종료!\n" : string.Empty;
 
         return game.Phase switch
         {
             GamePhase.AugmentSelect when game.Round == 0 =>
                 $"게임 시작!\n<size=70%>모두 증강 선택 중...  {Mathf.CeilToInt(game.RemainingTime)}</size>",
             GamePhase.AugmentSelect =>
-                $"{winner}팀 라운드 승리!\n<size=70%>{loser}팀 증강 선택 중...  {Mathf.CeilToInt(game.RemainingTime)}</size>",
+                $"{timeout}{winner}팀 라운드 승리!\n<size=70%>{loser}팀 증강 선택 중...  {Mathf.CeilToInt(game.RemainingTime)}</size>",
+            GamePhase.RoundStart when game.LastRoundTimeout && game.LastRoundWinner < 0 =>
+                $"시간 종료! 무승부\n<size=70%>라운드 {game.Round}  {Mathf.CeilToInt(game.RemainingTime)}</size>",
             GamePhase.RoundStart => $"라운드 {game.Round}  {Mathf.CeilToInt(game.RemainingTime)}",
             GamePhase.GameOver =>
-                $"{winner}팀 승리!\n<size=70%>{Mathf.CeilToInt(game.RemainingTime)}초 후 대기실로 돌아갑니다</size>",
+                $"{timeout}{winner}팀 승리!\n<size=70%>{Mathf.CeilToInt(game.RemainingTime)}초 후 대기실로 돌아갑니다</size>",
             _ => null
         };
     }
