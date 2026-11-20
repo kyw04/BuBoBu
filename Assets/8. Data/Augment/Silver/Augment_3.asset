@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: Augment_3
   m_EditorClassIdentifier: Assembly-CSharp::AugmentData
   displayName: "\uC2E43"
-  description: "\uACF5\uACA9\uC18D\uB3C4\uAC00 (+0.2)\uAC10\uC18C\uD558\uB294 \uB300\uC2E0 \uC0AC\uAC70\uB9AC\uAC00 (1) \uB298\uC5B4\uB0A9\uB2C8\uB2E4.\r\n\n"
+  description: "\uACF5\uACA9\uC18D\uB3C4\uAC00(+0.2) \uAC10\uC18C\uD558\uB294 \uB300\uC2E0 \uC0AC\uAC70\uB9AC\uAC00(1) \uB298\uC5B4\uB0A9\uB2C8\uB2E4.\r\n\n"
   icon: {fileID: -1370922234, guid: 959ce7f05a48a1e4998e95bb8d148983, type: 3}
   rank: 0
-  modifiers: []
   triggers:
   - rid: 3637287043308192297
   conditions: []
