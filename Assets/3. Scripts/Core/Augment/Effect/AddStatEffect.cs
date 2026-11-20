@@ -76,7 +76,8 @@ public class AddStatEffect : IAugmentEffect
                     AddStat(entity.GunStats, modifier.gunStat, value, modifier.type);
                     break;
                 case AugmentTarget.Bullet:
-                    AddStat(entity.BulletStats, modifier.bulletStat, value, modifier.type);
+                    if (entity.BulletStats != null)
+                        AddStat(entity.BulletStats, modifier.bulletStat, value, modifier.type);
                     break;
             }
         }

@@ -25,7 +25,8 @@ public class BulletStatValue : IAugmentValue
 {
     [SerializeField] private BulletStatType stat;
 
-    public float GetValue(Entity entity) => entity.Gun != null ? entity.Gun.BulletStats.GetStat(stat) : 0f;
+    public float GetValue(Entity entity)
+        => entity.Gun != null && entity.Gun.BulletStats != null ? entity.Gun.BulletStats.GetStat(stat) : 0f;
 }
 
 // 탄창에 남은 총알 수

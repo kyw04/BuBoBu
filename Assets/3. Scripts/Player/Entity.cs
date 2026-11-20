@@ -210,7 +210,8 @@ public class Entity : NetworkBehaviour, IDamageable
         if (EquippedGun != null)
         {
             EquippedGun.Stats.ResetRoundBonuses();
-            EquippedGun.BulletStats.ResetRoundBonuses();
+            if (EquippedGun.BulletStats != null) // 총알 스탯 컴포넌트가 없는 총도 있음
+                EquippedGun.BulletStats.ResetRoundBonuses();
         }
     }
 

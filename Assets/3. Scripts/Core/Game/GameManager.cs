@@ -213,7 +213,10 @@ public class GameManager : NetworkBehaviour
 
     private void StartRound()
     {
+        // 단계를 먼저 바꿔 둠. 아래에서 예외가 나도 다음 틱에 StartRound가 반복 호출되지 않게
         Round++;
+        Phase = GamePhase.RoundStart;
+        PhaseTimer = TickTimer.CreateFromSeconds(Runner, roundStartDelay);
         ClearBullets();
 
         var teamIndex = new int[TeamCount];
@@ -222,9 +225,6 @@ public class GameManager : NetworkBehaviour
             entity.ResetRoundStats(); // 부활 전에 초기화해야 원래 최대 체력으로 채워짐
             entity.Revive(GetSpawnPosition(entity.Team, teamIndex[entity.Team]++));
         }
-
-        Phase = GamePhase.RoundStart;
-        PhaseTimer = TickTimer.CreateFromSeconds(Runner, roundStartDelay);
     }
 
     private void CheckRoundEnd()
