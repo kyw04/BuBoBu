@@ -218,7 +218,10 @@ public class GameManager : NetworkBehaviour
 
         var teamIndex = new int[TeamCount];
         foreach (Entity entity in Players)
+        {
+            entity.ResetRoundStats(); // 부활 전에 초기화해야 원래 최대 체력으로 채워짐
             entity.Revive(GetSpawnPosition(entity.Team, teamIndex[entity.Team]++));
+        }
 
         Phase = GamePhase.RoundStart;
         PhaseTimer = TickTimer.CreateFromSeconds(Runner, roundStartDelay);

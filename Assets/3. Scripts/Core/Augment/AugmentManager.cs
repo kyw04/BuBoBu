@@ -8,6 +8,7 @@ public class AugmentManager
     {
         public AugmentData Data;
         public readonly List<IAugmentTrigger> Triggers = new();
+        public readonly List<IAugmentCondition> Conditions = new();
     }
 
     private readonly Entity owner;
@@ -28,14 +29,20 @@ public class AugmentManager
         var active = new ActiveAugment { Data = data };
         actives.Add(active);
 
-        // 트리거는 ScriptableObject에 공유된 인스턴스라서 플레이어/획득마다 복제해서 사용
+        // 트리거/조건은 ScriptableObject에 공유된 인스턴스라서 플레이어/획득마다 복제해서 사용
+        foreach (IAugmentCondition condition in data.Conditions)
+        {
+            if (condition != null)
+                active.Conditions.Add(Clone(condition));
+        }
+
         foreach (IAugmentTrigger trigger in data.Triggers)
         {
             if (trigger == null) continue;
 
             IAugmentTrigger instance = Clone(trigger);
             active.Triggers.Add(instance);
-            instance.Bind(owner, data.Apply);
+            instance.Bind(owner, context => data.Apply(context, active.Conditions));
         }
     }
 
@@ -50,6 +57,6 @@ public class AugmentManager
         actives.Clear();
     }
 
-    private static IAugmentTrigger Clone(IAugmentTrigger source)
-        => (IAugmentTrigger)JsonUtility.FromJson(JsonUtility.ToJson(source), source.GetType());
+    private static T Clone<T>(T source)
+        => (T)JsonUtility.FromJson(JsonUtility.ToJson(source), source.GetType());
 }

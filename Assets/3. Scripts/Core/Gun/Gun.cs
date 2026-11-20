@@ -28,6 +28,7 @@ public class Gun : NetworkBehaviour
     public GunData CurrentData => database != null ? database.Get(GunId - 1) : null;
 
     public int MaxAmmo => (int)Stats.GetStat(GunStatType.Ammo);
+    public int CurrentAmmo => Ammo;
     public bool IsReloading => ReloadTimer.IsRunning;
 
     public float AmmoFill
@@ -75,6 +76,7 @@ public class Gun : NetworkBehaviour
         {
             ReloadTimer = TickTimer.None;
             RefillAmmo();
+            if (owner != null) owner.NotifyReloadCompleted();
         }
     }
 
@@ -143,6 +145,7 @@ public class Gun : NetworkBehaviour
         if (IsReloading || Ammo >= MaxAmmo) return;
 
         ReloadTimer = TickTimer.CreateFromSeconds(Runner, Stats.GetStat(GunStatType.ReloadTime));
+        if (HasStateAuthority && owner != null) owner.NotifyReloadStarted();
     }
 
     public void RefillAmmo() => Ammo = MaxAmmo;

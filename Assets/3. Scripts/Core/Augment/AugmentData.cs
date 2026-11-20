@@ -34,19 +34,27 @@ public class AugmentData : ScriptableObject
     public Sprite Icon => icon;
     public AugmentRank Rank => rank;
     public IReadOnlyList<IAugmentTrigger> Triggers => triggers;
+    public IReadOnlyList<IAugmentCondition> Conditions => conditions;
 
     // 트리거가 발동했을 때 호출. 조건이 모두 맞으면(조건이 없으면 항상) 효과 적용
-    public void Apply(AugmentContext context)
+    // 조건은 횟수 같은 상태를 가질 수 있어서 AugmentManager가 플레이어별로 복제한 목록을 넘김
+    public void Apply(AugmentContext context, IReadOnlyList<IAugmentCondition> activeConditions)
     {
-        if (!CheckConditions(context)) return;
+        if (!CheckConditions(context, activeConditions)) return;
 
         foreach (IAugmentEffect effect in effects)
             effect?.Apply(context);
+
+        foreach (IAugmentCondition condition in activeConditions)
+        {
+            if (condition is IAugmentAppliedListener listener)
+                listener.OnApplied(context);
+        }
     }
 
-    private bool CheckConditions(AugmentContext context)
+    private static bool CheckConditions(AugmentContext context, IReadOnlyList<IAugmentCondition> activeConditions)
     {
-        foreach (IAugmentCondition condition in conditions)
+        foreach (IAugmentCondition condition in activeConditions)
         {
             if (condition != null && !condition.Condition(context))
                 return false;
