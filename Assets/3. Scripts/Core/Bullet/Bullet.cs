@@ -21,7 +21,7 @@ public class Bullet : NetworkBehaviour, IAttacker, IPoolable
     [Networked] private float Speed { get; set; }
     [Networked] private float Range { get; set; }
     [Networked] private float UpRange { get; set; }
-    [Networked] private float Scale { get; set; } // 총알 Size 스탯
+    [Networked] private float Scale { get; set; } // 총알 Size 스탯 x 쏜 플레이어의 BulletSize
     [Networked] private int SpawnTick { get; set; } // 스탯이 바뀌었을 때 남은 수명/사거리를 다시 계산하는 기준
     
     [Networked] public NetworkBool IsDead { get; private set; }
@@ -34,6 +34,7 @@ public class Bullet : NetworkBehaviour, IAttacker, IPoolable
 
     private ChangeDetector changes;
     private NetworkRunner runner; // onBeforeSpawned 안에서는 Runner가 아직 없을 수 있어서 따로 보관
+    private float ownerBulletSize = 1f; // 서버 전용: 쏜 순간의 플레이어 BulletSize
     private Vector3 baseScale;
     private bool baseScaleSaved;
 
@@ -68,6 +69,7 @@ public class Bullet : NetworkBehaviour, IAttacker, IPoolable
         this.runner = runner;
         Owner = owner;
         Damage = owner.Damage;
+        ownerBulletSize = owner.Stats.BulletSize;
         Direction = direction;
         ShotNumber = shotNumber;
         MagazineIndex = magazineIndex;
@@ -96,7 +98,7 @@ public class Bullet : NetworkBehaviour, IAttacker, IPoolable
         Speed = Stats.GetStat(BulletStatType.Speed);
         Range = Stats.GetStat(BulletStatType.Range);
         UpRange = Stats.GetStat(BulletStatType.UpRange);
-        Scale = Mathf.Max(0.1f, Stats.GetStat(BulletStatType.Size));
+        Scale = Mathf.Max(0.1f, Stats.GetStat(BulletStatType.Size) * ownerBulletSize);
         ApplyScale();
 
         float elapsed = (runner.Tick - SpawnTick) * runner.DeltaTime;
