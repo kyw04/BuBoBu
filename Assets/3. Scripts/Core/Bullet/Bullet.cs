@@ -177,6 +177,8 @@ public class Bullet : NetworkBehaviour, IAttacker, IPoolable
             if (other.TryGetComponent(out Player.PlayerMovement movement) && transform.position.y < movement.Foot.position.y)
             {
                 movement.Jump();
+                if (target is Entity stepper) // 자신이나 같은 팀 거품을 밟음 (증강 트리거용)
+                    stepper.NotifyBubbleStepped(this);
                 Die();
             }
             return;

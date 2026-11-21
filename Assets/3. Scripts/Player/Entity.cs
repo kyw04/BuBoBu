@@ -39,11 +39,13 @@ public class Entity : NetworkBehaviour, IDamageable
     public event Action ReloadStarted;   // 서버 전용: 장전을 시작했을 때
     public event Action ReloadCompleted; // 서버 전용: 장전이 끝나 탄약이 찼을 때
     public event Action<Bullet> BulletFired;   // 서버 전용: 총알을 쏠 때 (총알마다, 스폰 직전)
+    public event Action<Bullet> BubbleStepped; // 서버 전용: 자신이나 같은 팀의 거품(총알)을 밟았을 때
 
     // Gun이 장전 상태가 바뀔 때 호출 (증강 트리거가 총 교체와 상관없이 플레이어에 구독할 수 있도록 중계)
     public void NotifyReloadStarted() => ReloadStarted?.Invoke();
     public void NotifyReloadCompleted() => ReloadCompleted?.Invoke();
     public void NotifyBulletFired(Bullet bullet) => BulletFired?.Invoke(bullet);
+    public void NotifyBubbleStepped(Bullet bullet) => BubbleStepped?.Invoke(bullet);
     public Gun Gun => EquippedGun;
     public GunStats GunStats => EquippedGun.Stats;
     public BulletStats BulletStats => EquippedGun.BulletStats; 
