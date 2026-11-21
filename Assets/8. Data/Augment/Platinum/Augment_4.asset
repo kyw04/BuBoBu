@@ -21,15 +21,28 @@ MonoBehaviour:
   conditions: []
   effects:
   - rid: 3637287043308192300
+  - rid: 2170250616012013713
   references:
     version: 2
     RefIds:
+    - rid: 2170250616012013713
+      type: {class: SizeEffect, ns: , asm: Assembly-CSharp}
+      data:
+        subject: 0
+        target: 0
+        type: 1
+        value: -50
+        duration: 0
+        seconds: 3
     - rid: 3637287043308192299
       type: {class: OnSelectTrigger, ns: , asm: Assembly-CSharp}
       data: 
     - rid: 3637287043308192300
       type: {class: AddStatEffect, ns: , asm: Assembly-CSharp}
       data:
+        subject: 0
+        duration: 0
+        seconds: 3
         modifiers:
         - target: 0
           playerStat: 2
