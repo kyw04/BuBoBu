@@ -44,11 +44,11 @@ MonoBehaviour:
     - rid: 2170250616012013673
       type: {class: PlayerStatValue, ns: , asm: Assembly-CSharp}
       data:
-        stat: 1
+        stat: 0
     - rid: 2170250616012013674
       type: {class: PlayerStatValue, ns: , asm: Assembly-CSharp}
       data:
-        stat: 0
+        stat: 1
     - rid: 2170250616012013675
       type: {class: CountCondition, ns: , asm: Assembly-CSharp}
       data:
