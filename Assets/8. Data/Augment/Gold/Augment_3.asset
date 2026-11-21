@@ -16,7 +16,6 @@ MonoBehaviour:
   description: "\uC774\uB3D9\uC18D\uB3C4(3)\uC640 \uC810\uD504\uB825(3)\uC774 \uC99D\uAC00\uD569\uB2C8\uB2E4"
   icon: {fileID: 314188013, guid: f3ffe900923eea7459ca9eacff14ac4b, type: 3}
   rank: 1
-  modifiers: []
   triggers:
   - rid: 3637287043308192301
   conditions: []
@@ -31,6 +30,9 @@ MonoBehaviour:
     - rid: 3637287043308192302
       type: {class: AddStatEffect, ns: , asm: Assembly-CSharp}
       data:
+        subject: 0
+        duration: 0
+        seconds: 3
         modifiers:
         - target: 0
           playerStat: 4

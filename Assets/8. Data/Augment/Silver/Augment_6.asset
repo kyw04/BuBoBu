@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56e15c4bf8ae1b64492fb85bb005c2b0, type: 3}
+  m_Name: Augment_6
+  m_EditorClassIdentifier: Assembly-CSharp::AugmentData
+  displayName: "\uC2E46"
+  description: "\uCCB4\uB825\uC774 50%\uC774\uD558\uB85C \uB5A8\uC5B4\uC84C\uC744 \uB54C, \uCD5C\uB300 \uCCB4\uB825\uC5D020%\uC744 \uD68C\uBCF5\uD569\uB2C8\uB2E4 (1\uD68C)"
+  icon: {fileID: -1370922234, guid: 959ce7f05a48a1e4998e95bb8d148983, type: 3}
+  rank: 0
+  triggers:
+  - rid: 2170250616012013670
+  conditions:
+  - rid: 2170250616012013671
+  - rid: 2170250616012013675
+  effects:
+  - rid: 3637287043308192304
+  references:
+    version: 2
+    RefIds:
+    - rid: 2170250616012013670
+      type: {class: IntervalTrigger, ns: , asm: Assembly-CSharp}
+      data:
+        interval: 0.1
+        resetOnRoundStart: 1
+    - rid: 2170250616012013671
+      type: {class: CompareCondition, ns: , asm: Assembly-CSharp}
+      data:
+        subject: 0
+        value:
+          rid: 2170250616012013673
+        divideBy:
+          rid: 2170250616012013674
+        compare: 0
+        threshold: 50
+    - rid: 2170250616012013673
+      type: {class: PlayerStatValue, ns: , asm: Assembly-CSharp}
+      data:
+        stat: 1
+    - rid: 2170250616012013674
+      type: {class: PlayerStatValue, ns: , asm: Assembly-CSharp}
+      data:
+        stat: 0
+    - rid: 2170250616012013675
+      type: {class: CountCondition, ns: , asm: Assembly-CSharp}
+      data:
+        maxCount: 1
+        resetEachRound: 1
+    - rid: 3637287043308192304
+      type: {class: AddStatEffect, ns: , asm: Assembly-CSharp}
+      data:
+        subject: 0
+        duration: 1
+        seconds: 0.1
+        modifiers:
+        - target: 0
+          playerStat: 0
+          gunStat: 2
+          bulletStat: 0
+          type: 1
+          value: 20
