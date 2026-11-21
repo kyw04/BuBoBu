@@ -19,6 +19,7 @@ public class Bullet : NetworkBehaviour, IAttacker, IPoolable
     [Networked] private TickTimer RangeTimer { get; set; } // 시간 = 거리 / 속도
     [Networked] private float Speed { get; set; }
     [Networked] private float Range { get; set; }
+    [Networked] private int SpawnTick { get; set; } // 스탯이 바뀌었을 때 남은 수명/사거리를 다시 계산하는 기준
     
     [Networked] public NetworkBool IsDead { get; private set; }
     [Networked] private TickTimer DeathTimer { get; set; }
@@ -29,6 +30,7 @@ public class Bullet : NetworkBehaviour, IAttacker, IPoolable
     [SerializeField] private EffectData deathEffect; // 피격·수명 종료 등으로 터질 때
 
     private ChangeDetector changes;
+    private NetworkRunner runner; // onBeforeSpawned 안에서는 Runner가 아직 없을 수 있어서 따로 보관
 
     public override void Spawned()
     {
@@ -53,18 +55,53 @@ public class Bullet : NetworkBehaviour, IAttacker, IPoolable
     {
         if (Stats == null)
             Stats = GetComponent<BulletStats>();
+        Stats.ResetBonuses(); // 풀에서 재사용될 때 이전 총알에 적용된 증강 스탯 제거
 
+        this.runner = runner;
         Owner = owner;
         Damage = owner.Damage;
         Direction = direction;
         ShotNumber = shotNumber;
         MagazineIndex = magazineIndex;
         IsLastInMagazine = isLastInMagazine;
+        SpawnTick = runner.Tick;
+        InvincibilityTimer = TickTimer.CreateFromSeconds(runner, 0.1f);
+        RefreshStats();
+    }
+
+    // 서버 전용: 이 총알 하나에만 스탯 보너스 적용 (증강 효과용). 적용 후 RefreshStats 호출 필요
+    public void AddStat(BulletStatType type, float value, ModifierType modifierType)
+    {
+        if (modifierType == ModifierType.Flat) Stats.AddBonusStat(type, value);
+        else Stats.AddMultiplierBonus(type, value / 100f); // Percent: 50 = +50%
+    }
+
+    // 서버 전용: 이 총알의 데미지를 percent%만큼 변경 (50 = +50%, -20 = -20%)
+    public void AddDamagePercent(float percent)
+    {
+        Damage = Mathf.Max(0f, Damage * (1f + percent / 100f));
+    }
+
+    // 현재 스탯으로 속도/사거리/수명을 다시 계산. 이미 지난 시간만큼은 빼고 남은 시간으로 타이머를 다시 맞춤
+    public void RefreshStats()
+    {
         Speed = Stats.GetStat(BulletStatType.Speed);
         Range = Stats.GetStat(BulletStatType.Range);
-        InvincibilityTimer = TickTimer.CreateFromSeconds(runner, 0.1f);
-        LifeTimer = TickTimer.CreateFromSeconds(runner, Stats.GetStat(BulletStatType.LifTime));
-        RangeTimer = TickTimer.CreateFromSeconds(runner, Range / Speed);
+
+        float elapsed = (runner.Tick - SpawnTick) * runner.DeltaTime;
+        LifeTimer = CreateTimer(Stats.GetStat(BulletStatType.LifTime) - elapsed);
+        RangeTimer = CreateTimer((Speed > 0f ? Range / Speed : 0f) - elapsed);
+    }
+
+    private TickTimer CreateTimer(float seconds)
+        => TickTimer.CreateFromSeconds(runner, Mathf.Max(seconds, runner.DeltaTime));
+    
+    public void Die()
+    {
+        if (!HasStateAuthority || IsDead) return;
+        IsDead = true;
+        DeathTimer = TickTimer.CreateFromSeconds(Runner, deathDuration);
+        OnDeathStart();
     }
 
     protected virtual void OnDeathStart() { }
