@@ -132,7 +132,11 @@ public class Gun : NetworkBehaviour
         {
             Vector2 direction = Quaternion.Euler(0, 0, Random.Range(-halfAngle, halfAngle)) * forward;
             Runner.Spawn(bulletPrefab, firePoint.position, onBeforeSpawned: (runner, obj) =>
-                obj.GetComponent<Bullet>().Initialize(owner, runner, direction));
+            {
+                Bullet bullet = obj.GetComponent<Bullet>();
+                bullet.Initialize(owner, runner, direction);
+                if (owner != null) owner.NotifyBulletFired(bullet); // 스폰 전에 알려서 증강이 바꾼 스탯이 처음부터 적용되게 함
+            });
         }
 
         FireCount++;
