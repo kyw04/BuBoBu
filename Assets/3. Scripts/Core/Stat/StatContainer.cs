@@ -39,7 +39,10 @@ public abstract class StatContainer<TStat> : StatContainerBase where TStat : unm
 
     private static int Idx(TStat type) => UnsafeUtility.EnumToInt(type);
 
-    public float GetDefaultStat(TStat type) => DefaultStats.GetValueOrDefault(type, 0f);
+    public float GetDefaultStat(TStat type) => DefaultStats.TryGetValue(type, out float value) ? value : FallbackDefault(type);
+
+    // 인스펙터 기본값에 없는 스탯의 기본값 (크기처럼 0이면 안 되는 스탯은 하위 클래스에서 지정)
+    protected virtual float FallbackDefault(TStat type) => 0f;
     public float GetBonusStat(TStat type) => Bonus[Idx(type)];
 
     public void SetBonusStat(TStat type, float value) => Bonus.Set(Idx(type), value);

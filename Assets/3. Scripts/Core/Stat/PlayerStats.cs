@@ -10,6 +10,8 @@ public enum PlayerStatType
     Speed,
     JumpPower,
     JumpCount,
+    Size,       // 플레이어 크기 배율 (기본 1)
+    BulletSize, // 이 플레이어가 쏘는 총알의 크기 배율 (기본 1)
 }
 
 public interface ICombatStat
@@ -32,6 +34,8 @@ public class PlayerStats : StatContainer<PlayerStatType>, ICombatStat, IMoveStat
 {
     [SerializeField] private Dictionary<PlayerStatType, float> defaultStats = new();
     protected override IReadOnlyDictionary<PlayerStatType, float> DefaultStats => defaultStats;
+    protected override float FallbackDefault(PlayerStatType type)
+        => type is PlayerStatType.Size or PlayerStatType.BulletSize ? 1f : 0f;
 
     public float Health => GetStat(PlayerStatType.Health);
     public float MaxHealth => GetStat(PlayerStatType.MaxHealth);
@@ -40,4 +44,6 @@ public class PlayerStats : StatContainer<PlayerStatType>, ICombatStat, IMoveStat
     public float MoveSpeed => GetStat(PlayerStatType.Speed);
     public float JumpPower => GetStat(PlayerStatType.JumpPower);
     public float JumpCount => GetStat(PlayerStatType.JumpCount);
+    public float Size => GetStat(PlayerStatType.Size);
+    public float BulletSize => GetStat(PlayerStatType.BulletSize);
 }
