@@ -21,6 +21,7 @@ public class Entity : NetworkBehaviour, IDamageable
     [SerializeField] private EffectData hitEffect; // 플레이어 피격
 
     private Rigidbody2D rb;
+    private Vector3 baseScale; // 크기 배율 1일 때의 크기
     private NetworkRigidbody2D networkRb;
     private Renderer[] renderers;
     private Canvas[] canvases;
@@ -53,6 +54,7 @@ public class Entity : NetworkBehaviour, IDamageable
     public void Awake()
     {
         Stats = GetComponent<PlayerStats>();
+        baseScale = transform.localScale;
         rb = GetComponent<Rigidbody2D>();
         networkRb = GetComponent<NetworkRigidbody2D>();
         renderers = GetComponentsInChildren<Renderer>(true);
@@ -75,6 +77,7 @@ public class Entity : NetworkBehaviour, IDamageable
 
     public override void FixedUpdateNetwork()
     {
+        ApplySize(); // 충돌 판정이 바뀐 크기를 바로 따르도록 시뮬레이션에서도 적용
         if (!HasStateAuthority) return;
 
         Ticked?.Invoke();
@@ -102,6 +105,7 @@ public class Entity : NetworkBehaviour, IDamageable
 
     public override void Render()
     {
+        ApplySize(); // 크기 스탯은 동기화되므로 모든 클라이언트에서 같은 크기로 보임
         foreach (var change in changes.DetectChanges(this))
         {
             if (change == nameof(IsDead))
@@ -232,6 +236,11 @@ public class Entity : NetworkBehaviour, IDamageable
             EquippedGun.Stats.ResetBonuses();
             EquippedGun.ResetBullet();
         }
+    }
+
+    private void ApplySize()
+    {
+        transform.localScale = baseScale * Mathf.Max(0.1f, Stats.Size);
     }
 
     private void ApplyDeadState()
