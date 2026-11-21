@@ -15,4 +15,5 @@ public class BulletStats : StatContainer<BulletStatType>
 {
     [SerializeField] private Dictionary<BulletStatType, float> defaultStats = new();
     protected override IReadOnlyDictionary<BulletStatType, float> DefaultStats => defaultStats;
+    protected override float FallbackDefault(BulletStatType type) => type == BulletStatType.Size ? 1f : 0f;
 }

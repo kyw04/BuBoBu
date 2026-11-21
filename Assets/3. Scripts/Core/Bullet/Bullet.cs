@@ -21,6 +21,7 @@ public class Bullet : NetworkBehaviour, IAttacker, IPoolable
     [Networked] private float Speed { get; set; }
     [Networked] private float Range { get; set; }
     [Networked] private float UpRange { get; set; }
+    [Networked] private float Scale { get; set; } // 총알 Size 스탯
     [Networked] private int SpawnTick { get; set; } // 스탯이 바뀌었을 때 남은 수명/사거리를 다시 계산하는 기준
     
     [Networked] public NetworkBool IsDead { get; private set; }
@@ -33,12 +34,15 @@ public class Bullet : NetworkBehaviour, IAttacker, IPoolable
 
     private ChangeDetector changes;
     private NetworkRunner runner; // onBeforeSpawned 안에서는 Runner가 아직 없을 수 있어서 따로 보관
+    private Vector3 baseScale;
+    private bool baseScaleSaved;
 
     private float upTime;
     
     public override void Spawned()
     {
         changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
+        ApplyScale();
         spawnEffect.Play(transform.position);
     }
 
@@ -92,11 +96,24 @@ public class Bullet : NetworkBehaviour, IAttacker, IPoolable
         Speed = Stats.GetStat(BulletStatType.Speed);
         Range = Stats.GetStat(BulletStatType.Range);
         UpRange = Stats.GetStat(BulletStatType.UpRange);
+        Scale = Mathf.Max(0.1f, Stats.GetStat(BulletStatType.Size));
+        ApplyScale();
 
         float elapsed = (runner.Tick - SpawnTick) * runner.DeltaTime;
         LifeTimer = CreateTimer(Stats.GetStat(BulletStatType.LifTime) - elapsed);
         RangeTimer = CreateTimer((Speed > 0f ? Range / Speed : 0f) - elapsed);
         upTime = (Speed > 0f ? UpRange / Speed : 0f) - elapsed;
+    }
+
+    private void ApplyScale()
+    {
+        // 풀에서 재사용되면 이전 크기가 남아 있으므로 처음 크기를 한 번만 저장해 둠
+        if (!baseScaleSaved)
+        {
+            baseScale = transform.localScale;
+            baseScaleSaved = true;
+        }
+        transform.localScale = baseScale * (Scale > 0f ? Scale : 1f);
     }
 
     private TickTimer CreateTimer(float seconds)
@@ -126,6 +143,7 @@ public class Bullet : NetworkBehaviour, IAttacker, IPoolable
 
     public override void Render()
     {
+        ApplyScale();
         foreach (var change in changes.DetectChanges(this))
         {
             switch (change)
