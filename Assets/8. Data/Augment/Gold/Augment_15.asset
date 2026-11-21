@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56e15c4bf8ae1b64492fb85bb005c2b0, type: 3}
+  m_Name: Augment_15
+  m_EditorClassIdentifier: Assembly-CSharp::AugmentData
+  displayName: "\uACE815"
+  description: "\uC7A5\uC804 \uD6C4 2\uCD08 \uB3D9\uC548 \uACF5\uACA9\uC18D\uB3C4 (-0.5) \uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4"
+  icon: {fileID: 314188013, guid: f3ffe900923eea7459ca9eacff14ac4b, type: 3}
+  rank: 1
+  triggers:
+  - rid: 2170250616012013697
+  conditions:
+  - rid: -2
+  effects:
+  - rid: 3637287043308192294
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 2170250616012013697
+      type: {class: OnReloadCompleteTrigger, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 3637287043308192294
+      type: {class: AddStatEffect, ns: , asm: Assembly-CSharp}
+      data:
+        subject: 0
+        duration: 2
+        seconds: 2
+        modifiers:
+        - target: 1
+          playerStat: 6
+          gunStat: 3
+          bulletStat: 0
+          type: 0
+          value: -0.5

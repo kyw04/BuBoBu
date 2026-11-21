@@ -16,11 +16,8 @@ MonoBehaviour:
   description: "\uCD5C\uB300 \uCCB4\uB825(50%)\uC640 \uBC29\uC5B4\uB825(50%)\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4"
   icon: {fileID: 314188013, guid: f3ffe900923eea7459ca9eacff14ac4b, type: 3}
   rank: 2
-  modifiers: []
   triggers:
   - rid: 3637287043308192317
-  - rid: -2
-  - rid: -2
   conditions:
   - rid: -2
   effects:
@@ -37,6 +34,9 @@ MonoBehaviour:
     - rid: 3637287043308192318
       type: {class: AddStatEffect, ns: , asm: Assembly-CSharp}
       data:
+        subject: 0
+        duration: 0
+        seconds: 3
         modifiers:
         - target: 0
           playerStat: 1

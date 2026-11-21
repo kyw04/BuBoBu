@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: AugmentDatabase
   m_EditorClassIdentifier: Assembly-CSharp::AugmentDatabase
   augments:
+  - {fileID: 11400000, guid: 0bd4fbca857b7e1458d0fb2bd0ea42b2, type: 2}
   - {fileID: 11400000, guid: 7bff602aeaa597c4fa6cdba9ed2c3372, type: 2}
   - {fileID: 11400000, guid: 728531e855dbd8e4c82c1065c9bb20b5, type: 2}
   - {fileID: 11400000, guid: aa8f2b863abe77f48a37c444cc4cbb58, type: 2}
@@ -22,6 +23,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9e14ccd734e903a4d9a088f1461459f4, type: 2}
   - {fileID: 11400000, guid: 5bdcbad5872ec5c42ad28a334546c0ae, type: 2}
   - {fileID: 11400000, guid: dc14f74dd730c9b469a3158c27bca011, type: 2}
+  - {fileID: 11400000, guid: 700812f3a13ea08458c036bca23b81f0, type: 2}
   - {fileID: 11400000, guid: a69a6ee2468d12d419e3006f5736e773, type: 2}
   - {fileID: 11400000, guid: 2dc3b3435f4f00743815ce7da9a07225, type: 2}
   - {fileID: 11400000, guid: b2e3bdf833550644286e8d85f80dd096, type: 2}
@@ -35,6 +37,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: dde909dbf752a0842877f63d7097dc10, type: 2}
   - {fileID: 11400000, guid: 2ddeae73d0775cf4b929899c997c1a59, type: 2}
   - {fileID: 11400000, guid: 377420c60287c554ba8e9fe3ec770216, type: 2}
+  - {fileID: 11400000, guid: ef2ac3ad3b2c4de4c91b54e8350c83d2, type: 2}
+  - {fileID: 11400000, guid: 18d5ee6f22adfad4d81b68c203fc65a7, type: 2}
+  - {fileID: 11400000, guid: 07e1aec6e7efdde44848a392bdfc4796, type: 2}
+  - {fileID: 11400000, guid: adfa36d720a5d2d4a96163b6970e87a0, type: 2}
+  - {fileID: 11400000, guid: 60a7c53674eab6d499ad442b2c20a802, type: 2}
+  - {fileID: 11400000, guid: 609d33d5c79571d41b80e74c97b18a2a, type: 2}
   rankSettings:
   - rank: 0
     displayName: "\uC2E4\uBC84"
