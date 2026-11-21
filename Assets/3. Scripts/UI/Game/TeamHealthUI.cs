@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,8 @@ public class TeamHealthUI : MonoBehaviour
     {
         public CanvasGroup group; // 슬롯 전체 (빈 슬롯이면 숨김)
         public Image healthBar;   // Filled 이미지
+        public TextMeshProUGUI maxHealthBarText;
+        public TextMeshProUGUI healthBarText;
     }
 
     [SerializeField] private GameManager game; // 같은 씬의 GameManager
@@ -58,7 +61,13 @@ public class TeamHealthUI : MonoBehaviour
 
             if (slot.group != null)
                 slot.group.alpha = entity != null ? 1f - i * 0.75f : 0f;
-
+            
+            if (slot.maxHealthBarText != null)
+                slot.maxHealthBarText.text = entity?.Stats.MaxHealth.ToString("#");
+            
+            if (slot.healthBarText != null)
+                slot.healthBarText.text = entity?.Stats.Health.ToString("#");
+            
             if (slot.healthBar == null) continue;
 
             slot.healthBar.color = color;
