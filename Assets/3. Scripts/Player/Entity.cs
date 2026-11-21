@@ -214,6 +214,7 @@ public class Entity : NetworkBehaviour, IDamageable
         if (EquippedGun != null)
         {
             EquippedGun.Stats.ResetRoundBonuses();
+            EquippedGun.ClearRoundBullet();
             if (EquippedGun.BulletStats != null) // 총알 스탯 컴포넌트가 없는 총도 있음
                 EquippedGun.BulletStats.ResetRoundBonuses();
         }
@@ -227,7 +228,10 @@ public class Entity : NetworkBehaviour, IDamageable
         timedReverts.Clear();
         Stats.ResetBonuses();
         if (EquippedGun != null)
+        {
             EquippedGun.Stats.ResetBonuses();
+            EquippedGun.ResetBullet();
+        }
     }
 
     private void ApplyDeadState()

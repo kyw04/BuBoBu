@@ -47,6 +47,35 @@ public class Gun : NetworkBehaviour
 
     private Entity owner;
     private float orbitRadius;
+
+    // 서버 전용: 증강으로 바꾼 총알. 발사는 서버에서만 하므로 동기화하지 않음
+    private NetworkPrefabRef permanentBullet; // 게임이 끝날 때까지
+    private NetworkPrefabRef roundBullet;     // 이번 라운드/시간 한정 (permanentBullet보다 우선)
+
+    public NetworkPrefabRef CurrentBulletPrefab
+        => roundBullet.IsValid ? roundBullet : permanentBullet.IsValid ? permanentBullet : bulletPrefab;
+
+    // 서버 전용: 쏘는 총알을 prefab으로 교체. roundOnly면 라운드가 바뀔 때 원래 총알로 돌아감
+    public void SetBullet(NetworkPrefabRef prefab, bool roundOnly)
+    {
+        if (!prefab.IsValid) return;
+        if (roundOnly) roundBullet = prefab;
+        else permanentBullet = prefab;
+    }
+
+    // 서버 전용: 라운드/시간 한정 총알을 되돌림. prefab을 주면 그 총알일 때만 되돌림 (다른 증강이 덮어쓴 경우 유지)
+    public void ClearRoundBullet(NetworkPrefabRef prefab = default)
+    {
+        if (!prefab.IsValid || roundBullet == prefab)
+            roundBullet = default;
+    }
+
+    // 서버 전용: 증강으로 바꾼 총알을 모두 되돌림 (새 게임 시작 전)
+    public void ResetBullet()
+    {
+        permanentBullet = default;
+        roundBullet = default;
+    }
     
     private void Awake()
     {
@@ -136,7 +165,7 @@ public class Gun : NetworkBehaviour
         for (int i = 0; i < count; i++)
         {
             Vector2 direction = Quaternion.Euler(0, 0, Random.Range(-halfAngle, halfAngle)) * forward;
-            Runner.Spawn(bulletPrefab, firePoint.position, onBeforeSpawned: (runner, obj) =>
+            Runner.Spawn(CurrentBulletPrefab, firePoint.position, onBeforeSpawned: (runner, obj) =>
             {
                 Bullet bullet = obj.GetComponent<Bullet>();
                 bullet.Initialize(owner, runner, direction, shotNumber, magazineIndex, isLastInMagazine);
