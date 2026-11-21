@@ -128,13 +128,18 @@ public class Gun : NetworkBehaviour
         float halfAngle = Stats.GetStat(GunStatType.Angle) / 2f;
         int count = (int)Stats.GetStat(GunStatType.BulletCount);
         Vector2 forward = (firePoint.position - transform.position).normalized;
+
+        // 한 번 쏠 때 나가는 총알(산탄)은 모두 같은 발사 번호를 가짐
+        int shotNumber = FireCount + 1;
+        int magazineIndex = Mathf.Max(1, MaxAmmo - Ammo + 1);
+        bool isLastInMagazine = Ammo == 1;
         for (int i = 0; i < count; i++)
         {
             Vector2 direction = Quaternion.Euler(0, 0, Random.Range(-halfAngle, halfAngle)) * forward;
             Runner.Spawn(bulletPrefab, firePoint.position, onBeforeSpawned: (runner, obj) =>
             {
                 Bullet bullet = obj.GetComponent<Bullet>();
-                bullet.Initialize(owner, runner, direction);
+                bullet.Initialize(owner, runner, direction, shotNumber, magazineIndex, isLastInMagazine);
                 if (owner != null) owner.NotifyBulletFired(bullet); // 스폰 전에 알려서 증강이 바꾼 스탯이 처음부터 적용되게 함
             });
         }

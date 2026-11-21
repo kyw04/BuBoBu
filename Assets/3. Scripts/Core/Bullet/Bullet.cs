@@ -7,6 +7,11 @@ public class Bullet : NetworkBehaviour, IAttacker, IPoolable
 
     public Entity Owner { get; private set; }
     public float Damage { get; private set; }
+
+    // 서버 전용: 어떤 총알인지 (증강 조건용)
+    public int ShotNumber { get; private set; }     // 총을 쏜 횟수 중 몇 번째 발사인지 (1부터)
+    public int MagazineIndex { get; private set; }  // 탄창에서 몇 번째 총알인지 (1부터)
+    public bool IsLastInMagazine { get; private set; }
     
     [Networked] private Vector2 Direction { get; set; }
     [Networked] private TickTimer InvincibilityTimer { get; set; }
@@ -36,11 +41,15 @@ public class Bullet : NetworkBehaviour, IAttacker, IPoolable
     {
         Owner = null;
         Damage = 0f;
+        ShotNumber = 0;
+        MagazineIndex = 0;
+        IsLastInMagazine = false;
         if (animator != null)
             animator.Rebind();
     }
 
-    public void Initialize(Entity owner, NetworkRunner runner, Vector2 direction)
+    public void Initialize(Entity owner, NetworkRunner runner, Vector2 direction,
+        int shotNumber = 0, int magazineIndex = 0, bool isLastInMagazine = false)
     {
         if (Stats == null)
             Stats = GetComponent<BulletStats>();
@@ -48,19 +57,14 @@ public class Bullet : NetworkBehaviour, IAttacker, IPoolable
         Owner = owner;
         Damage = owner.Damage;
         Direction = direction;
+        ShotNumber = shotNumber;
+        MagazineIndex = magazineIndex;
+        IsLastInMagazine = isLastInMagazine;
         Speed = Stats.GetStat(BulletStatType.Speed);
         Range = Stats.GetStat(BulletStatType.Range);
         InvincibilityTimer = TickTimer.CreateFromSeconds(runner, 0.1f);
         LifeTimer = TickTimer.CreateFromSeconds(runner, Stats.GetStat(BulletStatType.LifTime));
         RangeTimer = TickTimer.CreateFromSeconds(runner, Range / Speed);
-    }
-    
-    public void Die()
-    {
-        if (!HasStateAuthority || IsDead) return;
-        IsDead = true;
-        DeathTimer = TickTimer.CreateFromSeconds(Runner, deathDuration);
-        OnDeathStart();
     }
 
     protected virtual void OnDeathStart() { }
